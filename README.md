@@ -1,4 +1,6 @@
+Here is the updated **GitHub README** file with the latest features and security additions:
 
+```markdown
 # Blog-Project
 
 A modern blogging platform that allows users to create, edit, and publish blog posts with a variety of features such as tagging, commenting, SEO optimization, and social interactions like following authors, liking, and sharing posts. This project is built using TypeScript, Node.js, and MongoDB as the database.
@@ -11,20 +13,24 @@ A modern blogging platform that allows users to create, edit, and publish blog p
 
 ## 🚀 Features
 
-- 🔐 **User Authentication** (Login/Signup with JWT)
-- 📝 **CRUD functionality for blog posts**
-- 🏷️ **Tagging and categorization system for blog posts**
-- 💬 **Comments section** for each blog post
-- 🌐 **SEO optimization** with meta tags
+- 🔐 **User Authentication** (Login/Signup with JWT, OAuth, Two-Factor Authentication)
+- 📝 **CRUD functionality for blog posts** with drafts and publishing options
+- 🏷️ **Tagging and categorization system** for blog posts
+- 💬 **Comments section** for each blog post with nested replies and likes
+- 🌐 **SEO optimization** with meta tags for each post
 - 📱 **Mobile-friendly responsive design**
 - 📄 **Pagination** for blog post listings
 - 👥 **Follow system** to follow other users/authors
-- 🧑‍💼 **User Profile** for viewing and managing posts, followers, and following
-- ❤️ **Heart (Like)** functionality for liking blog posts
+- 🧑‍💼 **User Profile** for managing posts, followers, following, and profile settings
+- ❤️ **Heart (Like)** functionality for liking blog posts and comments
 - 🔗 **Share functionality** to share blog posts via social platforms
 - 📚 **Categories** for organizing posts based on topics
 - 📱 **Social media-friendly sharing options**
-- 📈 **View post analytics** (views, likes, comments tracking)
+- 📈 **View post analytics** (views, likes, and comment tracking)
+- 🛠️ **Admin functionality** for managing users, posts, and content moderation
+- 🧰 **Content moderation** with reporting and reviewing tools for posts and comments
+- 🚨 **Security features**: rate limiting, 2FA, CSRF protection, input sanitization
+- 🔒 **Role-based access control** to secure privileged actions
 
 <p align="center">
   <img src="https://media.giphy.com/media/fVdGnPNYlvkX9xtHuR/giphy.gif" alt="Blogging GIF" width="400">
@@ -85,13 +91,36 @@ A modern blogging platform that allows users to create, edit, and publish blog p
    git checkout main
    git pull origin main
    ```
+1. Create a new branch:
+Use the following command to create a new feature branch:
 
+   ```bash
+git checkout -b feature-branch-name
+   ```
+Replace feature-branch-name with whatever you want to name your branch (e.g., new-feature or bugfix).
+
+2. Add your changes:
+Make sure your changes are staged:
+
+   ```bash
+git add .
+   ```
+3. Commit your changes:
+Commit your staged changes:
+   ```bash
+git commit -m "Your commit message"
+   ```
+4. Push the new branch to the remote repository:
+Now push your newly created branch to the remote repository:
+   ```bash
+git push origin feature-branch-name
+   ```
 ## 🖥️ Tech Stack
 
 - **Backend**: Node.js, TypeScript, Express.js
 - **Frontend**: React.js, HTML, CSS
 - **Database**: MongoDB
-- **Authentication**: JWT for access and refresh tokens
+- **Authentication**: JWT for access and refresh tokens, OAuth, Two-Factor Authentication
 - **State Management**: Redux
 - **Hosting**: AWS EC2 (or your hosting service)
 
@@ -164,6 +193,8 @@ npm run test
 - `POST /api/auth/login`: User login
 - `POST /api/auth/signup`: User signup
 - `POST /api/auth/logout`: User logout
+- `POST /api/auth/2fa-setup`: Two-Factor Authentication setup
+- `POST /api/auth/2fa-verify`: Verify Two-Factor Authentication
 
 ### Blog Posts
 
@@ -172,6 +203,8 @@ npm run test
 - `GET /api/posts/:id`: Get a single blog post
 - `PUT /api/posts/:id`: Update a blog post
 - `DELETE /api/posts/:id`: Delete a blog post
+- `POST /api/posts/:id/draft`: Save post as draft
+- `POST /api/posts/:id/publish`: Publish draft post
 
 ### Tags
 
@@ -193,17 +226,28 @@ npm run test
 - `GET /api/users/:id/posts`: Get all posts by a user
 - `POST /api/users/follow`: Follow a user
 - `POST /api/users/unfollow`: Unfollow a user
+- `DELETE /api/users/:id/profile`: Soft delete user profile
 
 ### Social Interaction
 
 - `POST /api/posts/:id/like`: Like (heart) a post
 - `POST /api/posts/:id/unlike`: Unlike a post
 - `POST /api/posts/:id/share`: Share a post on social media
+- `POST /api/posts/:id/bookmark`: Bookmark a post
 
 ### Comments
 
 - `POST /api/posts/:postId/comments`: Add a comment to a blog post
 - `DELETE /api/posts/:postId/comments/:commentId`: Delete a comment
+- `POST /api/posts/:postId/comments/:commentId/like`: Like a comment
+
+### Admin
+
+- `GET /api/admin/users`: Get all users
+- `POST /api/admin/users/:id/ban`: Ban a user
+- `POST /api/admin/users/:id/unban`: Unban a user
+- `GET /api/admin/reports/posts`: View reported posts
+- `POST /api/admin/reports/posts/:id/review`: Review reported post
 
 ## 📄 License
 
@@ -212,3 +256,4 @@ This project is licensed under the MIT License.
 ---
 
 Feel free to contribute and make this platform better! ✨
+```
