@@ -115,6 +115,42 @@ Now push your newly created branch to the remote repository:
    ```bash
 git push origin feature-branch-name
    ```
+
+
+1. Fetch the latest changes:
+First, ensure you have the latest changes from the remote repository, including the new branch your friend created:
+
+git fetch origin
+2. Check the branch list:
+Check if the new branch exists locally after fetching:
+
+git branch -a
+You should see the new branch your friend created, likely listed as origin/branch-name.
+
+3. Switch to the main branch:
+Ensure you're on the main branch before merging:
+
+git checkout main
+4. Pull the latest changes to your main branch:
+Make sure your main branch is up to date with the remote repository:
+
+git pull origin main
+5. Merge the feature branch into main:
+Now, merge the changes from your friend’s branch into the main branch:
+
+git merge origin/feature-new-design
+Replace branch-name with the name of the branch your friend pushed.
+
+6. Resolve any merge conflicts (if necessary):
+If there are any conflicts, Git will notify you. You’ll need to open the conflicted files, resolve them, and then commit the changes.
+
+To mark the conflicts as resolved:
+git add .
+git commit -m "Resolved merge conflicts"
+7. Push the changes to the remote main branch:
+After merging, push the updated main branch back to the remote repository:
+git push origin main
+
 ## 🖥️ Tech Stack
 
 - **Backend**: Node.js, TypeScript, Express.js
