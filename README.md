@@ -9,8 +9,6 @@ A modern blogging platform that allows users to create, edit, and publish blog p
 
 <img align="right" alt="coding" width="400" src="https://user-images.githubusercontent.com/55389276/140866485-8fb1c876-9a8f-4d6a-98dc-08c4981eaf70.gif">
 
-```markdown
-
 ## Features
 
 - User Authentication (Login/Signup with JWT)
@@ -205,6 +203,5 @@ This project is licensed under the MIT License.
 ---
 
 Feel free to contribute and make this platform better!
-```
 
 This README now includes the requested blog-related animations. Let me know if you'd like any further changes!
