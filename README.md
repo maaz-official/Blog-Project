@@ -203,5 +203,3 @@ This project is licensed under the MIT License.
 ---
 
 Feel free to contribute and make this platform better!
-
-This README now includes the requested blog-related animations. Let me know if you'd like any further changes!
