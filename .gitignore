@@ -1,0 +1,66 @@
+# Common
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Debugging
+debug/
+.idea/
+.vscode/
+
+# ===================
+# Backend-specific
+# ===================
+/backend/node_modules/
+/backend/dist/
+/backend/build/
+/backend/.npm
+/backend/.eslintcache
+
+# MongoDB-related
+/backend/*.log
+/backend/*.lock
+/backend/*.pid
+/backend/*.sock
+/backend/data/
+/backend/dump/
+
+# Optional MongoDB dump files
+/backend/dump/
+
+# ===================
+# Frontend-specific
+# ===================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+/frontend/.npm
+/frontend/.eslintcache
+
+/frontend/.next/
+/frontend/out/
+/frontend/.nuxt/
+
+/frontend/.parcel-cache/
+/frontend/.cache/
+
+/frontend/service-worker.js
+/frontend/sw.js
+/frontend/workbox-*.js
+
+.frontend/public
+
+/frontend/.cache
+/frontend/.vuepress/
+
