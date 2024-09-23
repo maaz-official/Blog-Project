@@ -1,4 +1,4 @@
-```markdown
+
 # Blog-Project
 
 A modern blogging platform that allows users to create, edit, and publish blog posts with a variety of features such as tagging, commenting, SEO optimization, and social interactions like following authors, liking, and sharing posts. This project is built using TypeScript, Node.js, and MongoDB as the database.
@@ -8,6 +8,8 @@ A modern blogging platform that allows users to create, edit, and publish blog p
 </p>
 
 <img align="right" alt="coding" width="400" src="https://user-images.githubusercontent.com/55389276/140866485-8fb1c876-9a8f-4d6a-98dc-08c4981eaf70.gif">
+
+```markdown
 
 ## Features
 
