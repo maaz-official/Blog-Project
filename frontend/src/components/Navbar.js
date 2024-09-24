@@ -30,6 +30,12 @@ function Navbar() {
                         <p>Write</p>
                     </Link>
 
+                    {/* Notification/Notification Link */}
+                    <Link to='/notifications' className='hidden md:flex gap-2 link text-gray-700 hover:text-gray-900 transition-colors'>
+                    <i className="fi fi-rr-file-notifications"></i>
+                    <p>Write</p>
+                    </Link>
+
                     {/* Sign In Button */}
                     <Link
                         className='py-2 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all'

@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import ProductDetailed from './pages/PageDetailed'
 import NotificationPage from './pages/NotificationPage';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route index path='/' element={<HomePage />} />
         <Route path='/product/:id' element={<ProductDetailed />} /> {/* Product route with ID */}
         <Route path="/notifications" element={<NotificationPage />} /> {/* Add your NotificationPage route */}
+        <Route path="/profile" element={<Profile />} />
         {/* Add more routes as needed */}
       </Routes>
 

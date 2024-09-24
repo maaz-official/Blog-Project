@@ -1,14 +1,60 @@
 import React, { useState } from 'react';
 
+// Updated notificationsData to include user profile pictures
 const notificationsData = {
   all: [
-    { id: 1, message: 'John liked your post', type: 'like', date: '2023-09-21' },
-    { id: 2, message: 'Alex commented on your photo', type: 'comment', date: '2023-09-22' },
-    { id: 3, message: 'Your post received 10 new likes', type: 'like', date: '2023-09-23' },
+    {
+      id: 1,
+      message: 'John liked your post',
+      type: 'like',
+      date: '2023-09-21',
+      user: {
+        name: 'John',
+        profilePicture: '/assets/profile/john.jpg', // User profile picture
+      },
+    },
+    {
+      id: 2,
+      message: 'Alex commented on your photo',
+      type: 'comment',
+      date: '2023-09-22',
+      user: {
+        name: 'Alex',
+        profilePicture: '/assets/profile/alex.jpg',
+      },
+    },
+    {
+      id: 3,
+      message: 'Your post received 10 new likes',
+      type: 'like',
+      date: '2023-09-23',
+      user: {
+        name: 'Emma',
+        profilePicture: '/assets/profile/emma.jpg',
+      },
+    },
   ],
   responses: [
-    { id: 1, message: 'Alex replied to your comment', type: 'response', date: '2023-09-22' },
-    { id: 2, message: 'Emma responded to your thread', type: 'response', date: '2023-09-23' },
+    {
+      id: 1,
+      message: 'Alex replied to your comment',
+      type: 'response',
+      date: '2023-09-22',
+      user: {
+        name: 'Alex',
+        profilePicture: '/assets/profile/alex.jpg',
+      },
+    },
+    {
+      id: 2,
+      message: 'Emma responded to your thread',
+      type: 'response',
+      date: '2023-09-23',
+      user: {
+        name: 'Emma',
+        profilePicture: '/assets/profile/emma.jpg',
+      },
+    },
   ],
 };
 
@@ -53,10 +99,18 @@ const NotificationPage = () => {
             {notificationsToShow.map((notification) => (
               <li
                 key={notification.id}
-                className="mb-4 p-4 bg-white shadow-md rounded-lg"
+                className="mb-4 p-4 bg-white shadow-md rounded-lg flex items-center space-x-4"
               >
-                <p className="text-gray-800">{notification.message}</p>
-                <p className="text-sm text-gray-500">{notification.date}</p>
+                {/* User profile image */}
+                <img
+                  src={notification.user.profilePicture}
+                  alt={notification.user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div>
+                  <p className="text-gray-800">{notification.message}</p>
+                  <p className="text-sm text-gray-500">{notification.date}</p>
+                </div>
               </li>
             ))}
           </ul>

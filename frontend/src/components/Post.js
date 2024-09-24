@@ -38,7 +38,7 @@ const Post = ({ post, loggedInUser }) => {
     <div className="relative">
       {/* Container for all posts (apply blur if sidebar is open) */}
       <div className={`transition-all duration-300 ${isSidebarOpen ? 'blur-sm' : ''}`}>
-        <div className="post bg-white shadow-lg rounded-lg p-6 mb-8 max-w-4xl mx-auto relative">
+        <div className="post bg-white rounded-lg p-6 mb-8 max-w-4xl mx-auto relative">
           {/* Post Title - Linked to product details page */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
             <Link to={`/product/${post.id}`} className="hover:underline">
