@@ -5,9 +5,9 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-import ProductDetailed from './pages/PageDetailed'
 import NotificationPage from './pages/NotificationPage';
 import Profile from './pages/Profile';
+import PostDetailed from './pages/PostDetailed';
 
 function App() {
   return (
@@ -17,12 +17,12 @@ function App() {
 
       {/* Routing for different pages */}
       <Routes>
+      <Route index path="/" element={<HomePage />} />
+        <Route path="/post/:id" element={<PostDetailed />} /> {/* Route for detailed post view */}
+        <Route path="/notifications" element={<NotificationPage />} /> {/* Add your NotificationPage route */}
+        <Route path="/@:username" element={<Profile />} />  {/* Profile page route */}
         <Route path='/signin' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
-        <Route index path='/' element={<HomePage />} />
-        <Route path='/product/:id' element={<ProductDetailed />} /> {/* Product route with ID */}
-        <Route path="/notifications" element={<NotificationPage />} /> {/* Add your NotificationPage route */}
-        <Route path="/profile" element={<Profile />} />
         {/* Add more routes as needed */}
       </Routes>
 
