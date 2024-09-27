@@ -1,6 +1,4 @@
-Here is the updated **GitHub README** file with the latest features and security additions:
 
-```markdown
 # Blog-Project
 
 A modern blogging platform that allows users to create, edit, and publish blog posts with a variety of features such as tagging, commenting, SEO optimization, and social interactions like following authors, liking, and sharing posts. This project is built using TypeScript, Node.js, and MongoDB as the database.
@@ -292,4 +290,3 @@ This project is licensed under the MIT License.
 ---
 
 Feel free to contribute and make this platform better! ✨
-```
