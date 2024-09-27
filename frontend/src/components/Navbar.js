@@ -1,14 +1,34 @@
 import logo from '../assets/logo.webp';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux'; // To get user info from Redux store
-import { FaUserCircle } from 'react-icons/fa'; // Icon for the profile
+import { useSelector, useDispatch } from 'react-redux';
+import { FaUserCircle } from 'react-icons/fa';
+import { Menu, MenuItem } from '@mui/material'; // MUI Menu and MenuItem components
+import { logout } from '../slices/authSlice'; // Assuming you have a logout action
 
 function Navbar() {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null); // State for dropdown anchor
 
     // Get user information from Redux store (auth slice)
     const { userInfo } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    // Handle dropdown menu open
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    // Handle dropdown menu close
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    // Handle user logout
+    const handleLogout = () => {
+        dispatch(logout()); // Assuming you have a logout action
+        handleMenuClose();
+    };
 
     return (
         <div>
@@ -36,6 +56,19 @@ function Navbar() {
                     </Link>
 
                     {/* Notification Icon Link */}
+
+                     {/* Notification Icon with Unread Count */}
+                     
+                     {/* To update the notification count in the navbar, you can use the unreadCount from your Redux store. */}
+                     {/* import { FaBell } from 'react-icons/fa'; // Notification icon */}
+                     {/* const { unreadCount } = useSelector((state) => state.notification); */}
+      {/* <div className="relative">
+        <FaBell size={30} />
+        {unreadCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+            {unreadCount}
+          </span>
+        )} */}
                     <Link to='/notifications' className='relative hidden md:flex gap-2 link text-gray-700 hover:text-gray-900 transition-colors'>
                         <i className="fi fi-rr-bell text-xl"></i>
                         <span className='absolute -top-3 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center'>
@@ -65,14 +98,36 @@ function Navbar() {
                     ) : (
                         <div className="relative flex items-center">
                             {/* Profile Icon when logged in */}
-                            <Link to={`/profile`} className='text-gray-700 hover:text-gray-900 transition-colors'>
-                                <FaUserCircle size={30} />
-                            </Link>
-                            {/* Dropdown (optional, can implement dropdown here) */}
-                            {/* <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2'>
-                                <Link to='/profile' className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>Profile</Link>
-                                <Link to='/logout' className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>Logout</Link>
-                            </div> */}
+                            <FaUserCircle
+                                size={30}
+                                className='cursor-pointer text-gray-700 hover:text-gray-900 transition-colors'
+                                onClick={handleMenuOpen} // Opens the dropdown menu
+                            />
+                            {/* MUI Dropdown Menu */}
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleMenuClose}
+                            >
+                                <MenuItem onClick={handleMenuClose}>
+                                    <Link to="/profile" className='block text-gray-700 hover:text-gray-900'>
+                                        Profile
+                                    </Link>
+                                </MenuItem>
+
+                                {/* Only show Dashboard if user is admin */}
+                                {userInfo && userInfo.isAdmin && (
+                                    <MenuItem onClick={handleMenuClose}>
+                                        <Link to="/dashboard" className='block text-gray-700 hover:text-gray-900'>
+                                            Dashboard
+                                        </Link>
+                                    </MenuItem>
+                                )}
+
+                                <MenuItem onClick={handleLogout}>
+                                    Logout
+                                </MenuItem>
+                            </Menu>
                         </div>
                     )}
                 </div>

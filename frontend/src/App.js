@@ -30,7 +30,7 @@ function App() {
         {/* Private Routes */}
         <Route element={<PrivateRoute />}>
           <Route path="/notifications" element={<NotificationPage />} /> {/* Private route for notifications */}
-          <Route path="/@:username" element={<Profile />} /> {/* Private route for profile page */}
+          <Route path="/profile" element={<Profile />} /> {/* Private route for profile page */}
         </Route>
 
         {/* Admin Routes */}
