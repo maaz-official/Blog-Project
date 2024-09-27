@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import cors from 'cors';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js'; // Import error middleware
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +38,10 @@ app.use('/api/posts', postRoutes); // Use post routes
 app.get('/', (req, res) => {
     res.send("API is running............");
 });
+
+// Error handling middleware (should be placed after route definitions)
+app.use(notFound); // Handles 404 errors for undefined routes
+app.use(errorHandler); // Handles other errors
 
 // Start server
 app.listen(PORT, () => {

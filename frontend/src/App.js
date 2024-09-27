@@ -8,6 +8,9 @@ import HomePage from './pages/HomePage';
 import NotificationPage from './pages/NotificationPage';
 import Profile from './pages/Profile';
 import PostDetailed from './pages/PostDetailed';
+import PrivateRoute from './components/PrivateRoutes'; // Import PrivateRoute component
+import AdminRoute from './components/AdminRoutes'; // Import AdminRoute component
+// import AdminDashboard from './pages/AdminDashboard'; // Example admin page
 
 function App() {
   return (
@@ -17,13 +20,23 @@ function App() {
 
       {/* Routing for different pages */}
       <Routes>
-      <Route index path="/" element={<HomePage />} />
+        <Route index path="/" element={<HomePage />} />
+
+        {/* Public Routes */}
         <Route path="/post/:id" element={<PostDetailed />} /> {/* Route for detailed post view */}
-        <Route path="/notifications" element={<NotificationPage />} /> {/* Add your NotificationPage route */}
-        <Route path="/@:username" element={<Profile />} />  {/* Profile page route */}
         <Route path='/signin' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
-        {/* Add more routes as needed */}
+
+        {/* Private Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/notifications" element={<NotificationPage />} /> {/* Private route for notifications */}
+          <Route path="/@:username" element={<Profile />} /> {/* Private route for profile page */}
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminRoute />}>
+          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> Admin route for dashboard */}
+        </Route>
       </Routes>
 
       <Footer />
