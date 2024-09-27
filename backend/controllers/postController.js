@@ -1,5 +1,6 @@
 import Post from '../model/postModel.js'; // Assuming your Post model is in the models folder
 
+
 // Controller to get all posts
 export const getAllPosts = async (req, res) => {
     try {
