@@ -30,10 +30,12 @@ function Navbar() {
                         <p>Write</p>
                     </Link>
 
-                    {/* Notification/Notification Link */}
-                    <Link to='/notifications' className='hidden md:flex gap-2 link text-gray-700 hover:text-gray-900 transition-colors'>
-                    <i className="fi fi-rr-file-notifications"></i>
-                    <p>Write</p>
+                    {/* Notification Icon Link */}
+                    <Link to='/notifications' className='relative hidden md:flex gap-2 link text-gray-700 hover:text-gray-900 transition-colors'>
+                        <i className="fi fi-rr-bell text-xl"></i>
+                        <span className='absolute -top-3 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center'>
+                            3
+                        </span>
                     </Link>
 
                     {/* Sign In Button */}
@@ -62,7 +64,7 @@ function Navbar() {
                         placeholder='Search'
                         className='w-full bg-gray-200 p-4 pl-6 rounded-full placeholder:text-gray-500'
                     />
-                    <i className='fi fi-rr-search absolute right-10 top-1/4 transform -translate-y-9 text-2xl text-gray-600'></i>
+                    <i className='fi fi-rr-search absolute right-14 top-[180px] transform -translate-y-9 text-2xl text-gray-600'></i>
                 </div>
             )}
         </div>
