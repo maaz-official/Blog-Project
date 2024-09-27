@@ -4,12 +4,17 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
-        required: true,  // Full name is now required
+        required: true,  // Full name is required
     },
     email: {
         type: String,
         required: true,
         unique: true, // Ensure emails are unique
+    },
+    username: {
+        type: String,
+        unique: true,  // Ensure usernames are unique
+        sparse: true,  // Allows multiple null values for username
     },
     password: {
         type: String,
@@ -21,7 +26,7 @@ const userSchema = new mongoose.Schema({
         default: false, // Default is not an admin
     },
     profileImage: {
-        type: String,  // URL to the profile image (cloud storage service)
+        type: String,  // URL to the profile image
         default: 'https://www.example.com/default-profile.jpg', // Default profile image
     },
     resetPasswordToken: {

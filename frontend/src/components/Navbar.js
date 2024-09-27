@@ -1,9 +1,14 @@
 import logo from '../assets/logo.webp';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'; // To get user info from Redux store
+import { FaUserCircle } from 'react-icons/fa'; // Icon for the profile
 
 function Navbar() {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
+
+    // Get user information from Redux store (auth slice)
+    const { userInfo } = useSelector((state) => state.auth);
 
     return (
         <div>
@@ -38,21 +43,38 @@ function Navbar() {
                         </span>
                     </Link>
 
-                    {/* Sign In Button */}
-                    <Link
-                        className='py-2 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all'
-                        to='/signin'
-                    >
-                        Sign In
-                    </Link>
+                    {/* Conditionally Render Sign In/Sign Up or Profile Icon */}
+                    {!userInfo ? (
+                        <>
+                            {/* Sign In Button */}
+                            <Link
+                                className='py-2 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all'
+                                to='/signin'
+                            >
+                                Sign In
+                            </Link>
 
-                    {/* Sign Up Button (hidden on mobile) */}
-                    <Link
-                        className='py-2 px-6 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-all hidden md:block'
-                        to='/signup'
-                    >
-                        Sign Up
-                    </Link>
+                            {/* Sign Up Button (hidden on mobile) */}
+                            <Link
+                                className='py-2 px-6 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-all hidden md:block'
+                                to='/signup'
+                            >
+                                Sign Up
+                            </Link>
+                        </>
+                    ) : (
+                        <div className="relative flex items-center">
+                            {/* Profile Icon when logged in */}
+                            <Link to={`/profile`} className='text-gray-700 hover:text-gray-900 transition-colors'>
+                                <FaUserCircle size={30} />
+                            </Link>
+                            {/* Dropdown (optional, can implement dropdown here) */}
+                            {/* <div className='absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2'>
+                                <Link to='/profile' className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>Profile</Link>
+                                <Link to='/logout' className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>Logout</Link>
+                            </div> */}
+                        </div>
+                    )}
                 </div>
             </nav>
 

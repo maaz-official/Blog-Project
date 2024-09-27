@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaGoogle, FaFacebook, FaApple, FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
 import Input from '../components/Input';
 import logo from '../assets/login.jpg';
@@ -9,20 +9,27 @@ import { setCredential } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import ButtonWithLoader from '../components/ButtonLoader'; // Import ButtonWithLoader component
+import ButtonWithLoader from '../components/ButtonLoader';
 
 const Signup = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // Get redirect query parameter (if any)
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const redirect = sp.get('redirect') || '/';
 
   // Access userInfo from Redux store
   const { userInfo } = useSelector((state) => state.auth);
 
   // Local state for form inputs
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');  // Added username field
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false); // Terms and Conditions state
   const [formError, setFormError] = useState('');
 
   // useRegisterMutation hook for registration
@@ -31,19 +38,24 @@ const Signup = () => {
   // Redirect if user is already logged in
   useEffect(() => {
     if (userInfo) {
-      navigate('/');
+      navigate(redirect);
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, redirect, navigate]);
 
   // Form validation
   const validateForm = () => {
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !username || !email || !password || !confirmPassword) {
       setFormError('Please fill out all fields.');
       return false;
     }
 
     if (password !== confirmPassword) {
       setFormError('Passwords do not match.');
+      return false;
+    }
+
+    if (!termsAccepted) {
+      setFormError('You must accept the terms and conditions.');
       return false;
     }
 
@@ -60,10 +72,10 @@ const Signup = () => {
     }
 
     try {
-      const userData = { fullName, email, password };
+      const userData = { fullName, username, email, password };  // Added username to userData
       const res = await register(userData).unwrap();
       dispatch(setCredential(res));
-      navigate('/');
+      navigate(redirect);
       toast.success('Registration successful!');
     } catch (err) {
       console.error('Registration failed:', err);
@@ -98,6 +110,18 @@ const Signup = () => {
               icon={FaUser}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+            />
+
+            {/* Username Input */}
+            <Input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="john_doe"
+              label="Username"
+              icon={FaUser}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
 
             {/* Email Input */}
@@ -135,6 +159,23 @@ const Signup = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+
+            {/* Terms and Conditions */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={termsAccepted}
+                onChange={() => setTermsAccepted(!termsAccepted)}
+                className="mr-2"
+              />
+              <label htmlFor="terms" className="text-gray-700">
+                I accept the{' '}
+                <Link to="/terms" className="text-pink-500 hover:underline">
+                  terms and conditions
+                </Link>
+              </label>
+            </div>
 
             {/* Sign Up Button with Loader */}
             <ButtonWithLoader isLoading={isLoading} type="submit">
