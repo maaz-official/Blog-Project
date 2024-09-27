@@ -13,17 +13,46 @@ export const postApiSlice = apiSlice.injectEndpoints({
     }),
 
     // Fetch post details by id
-    getById: builder.query({
+    getPostById: builder.query({
       query: (postId) => ({
         url: `${POST_URL}/${postId}`, // Request a single post by ID
         method: 'GET',
       }),
       keepUnusedDataFor: 5,
     }),
+
+    // Create a new post
+    createPost: builder.mutation({
+      query: (postData) => ({
+        url: POST_URL,
+        method: 'POST',
+        body: postData,
+      }),
+    }),
+
+    // Update a post by id
+    updatePost: builder.mutation({
+      query: ({ id, postData }) => ({
+        url: `${POST_URL}/${id}`,
+        method: 'PUT',
+        body: postData,
+      }),
+    }),
+
+    // Delete a post by id
+    deletePost: builder.mutation({
+      query: (id) => ({
+        url: `${POST_URL}/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
 export const {
   useGetPostsQuery, // Hook to fetch all posts
-  useGetByIdQuery, // Hook to fetch a detailed post by ID
+  useGetPostByIdQuery, // Hook to fetch a post by ID
+  useCreatePostMutation, // Hook to create a new post
+  useUpdatePostMutation, // Hook to update a post
+  useDeletePostMutation, // Hook to delete a post
 } = postApiSlice;

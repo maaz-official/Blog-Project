@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetByIdQuery } from '../slices/postApiSlice'; // Import the API hook
+import { useGetPostByIdQuery } from '../slices/postApiSlice'; // Import the API hook
 import Loader from '../components/Loader'; // Assuming you have a Loader component
 import Message from '../components/Message'; // Assuming you have a Message component for errors
 
 const PostDetailed = () => {
   const { id } = useParams(); // Extract post ID from URL params
-  const { data: post, isLoading, isError, error } = useGetByIdQuery(id); // Fetch post details by ID
+  const { data: post, isLoading, isError, error } = useGetPostByIdQuery(id); // Fetch post details by ID
 
   const [visibleComments, setVisibleComments] = useState(2); // Initially show 2 comments
   const [commentText, setCommentText] = useState(''); // State for comment input
