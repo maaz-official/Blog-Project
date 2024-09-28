@@ -18,7 +18,7 @@ const AdminSidebar = () => {
       </div>
       <ul className="space-y-2 p-4 text-sm">
         <li>
-          <Link to="/admin" className="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded-lg">
+          <Link to="/admin/dashboard" className="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded-lg">
             <HomeIcon className="h-5 w-5" />
             <span>Dashboard Home</span>
           </Link>
@@ -36,7 +36,7 @@ const AdminSidebar = () => {
           {isPostsDropdownOpen && (
             <ul className="pl-8 space-y-2 mt-2">
               <li>
-                <Link to="/admin/posts/list" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-lg">
+                <Link to="/admin/posts" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-lg">
                   <span>List All Posts</span>
                 </Link>
               </li>

@@ -10,8 +10,9 @@ import Profile from './pages/Profile';
 import PostDetailed from './pages/PostDetailed';
 import PrivateRoute from './components/PrivateRoutes'; // Import PrivateRoute component
 import AdminRoute from './components/AdminRoutes'; // Import AdminRoute component
-import ListAllPosts from './pages/admin/ListAllPosts';
+import ListAllPosts from './pages/admin/adminComponents/Lists/ListAllPosts';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import CreatePost from './pages/admin/adminComponents/creates/CreatePost';
 // import AdminDashboard from './pages/AdminDashboard'; // Example admin page
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route element={<AdminRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/posts" element={<ListAllPosts />} />
+            <Route path="/admin/posts/create" element={<CreatePost />} />
             {/* <Route path="/posts" element={<Posts />} />
             <Route path="/users" element={<Users />} />
             <Route path="/categories" element={<Categories />} />
