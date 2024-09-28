@@ -118,7 +118,7 @@ function Navbar() {
                                 {/* Only show Dashboard if user is admin */}
                                 {userInfo && userInfo.isAdmin && (
                                     <MenuItem onClick={handleMenuClose}>
-                                        <Link to="/dashboard" className='block text-gray-700 hover:text-gray-900'>
+                                        <Link to="/admin/dashboard" className='block text-gray-700 hover:text-gray-900'>
                                             Dashboard
                                         </Link>
                                     </MenuItem>
