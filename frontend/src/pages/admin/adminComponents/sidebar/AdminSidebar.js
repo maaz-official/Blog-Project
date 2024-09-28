@@ -1,8 +1,16 @@
-import React from 'react';
-import { HomeIcon, DocumentTextIcon, UserIcon, CogIcon, CollectionIcon } from '@heroicons/react/outline'; // Heroicons v1
+import React, { useState } from 'react';
+import { HomeIcon, DocumentTextIcon, UserIcon, CogIcon, CollectionIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline'; // Heroicons v1
 import { Link } from 'react-router-dom';
 
 const AdminSidebar = () => {
+  // State to control the dropdown visibility
+  const [isPostsDropdownOpen, setIsPostsDropdownOpen] = useState(false);
+
+  // Toggle the dropdown visibility
+  const togglePostsDropdown = () => {
+    setIsPostsDropdownOpen(!isPostsDropdownOpen);
+  };
+
   return (
     <div className="bg-gray-900 text-white w-64 flex flex-col min-h-screen shadow-lg">
       <div className="p-6 text-center">
@@ -15,12 +23,37 @@ const AdminSidebar = () => {
             <span>Dashboard Home</span>
           </Link>
         </li>
+
+        {/* Manage Posts Dropdown */}
         <li>
-          <Link to="/admin/posts" className="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded-lg">
+          <div className="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded-lg cursor-pointer" onClick={togglePostsDropdown}>
             <DocumentTextIcon className="h-5 w-5" />
             <span>Manage Posts</span>
-          </Link>
+            {isPostsDropdownOpen ? <ChevronUpIcon className="h-5 w-5 ml-auto" /> : <ChevronDownIcon className="h-5 w-5 ml-auto" />}
+          </div>
+
+          {/* Dropdown Items */}
+          {isPostsDropdownOpen && (
+            <ul className="pl-8 space-y-2 mt-2">
+              <li>
+                <Link to="/admin/posts/list" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-lg">
+                  <span>List All Posts</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin/posts/create" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-lg">
+                  <span>Create New Post</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin/posts/drafts" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-lg">
+                  <span>View Drafts</span>
+                </Link>
+              </li>
+            </ul>
+          )}
         </li>
+
         <li>
           <Link to="/admin/users" className="flex items-center space-x-3 hover:bg-gray-700 p-3 rounded-lg">
             <UserIcon className="h-5 w-5" />
