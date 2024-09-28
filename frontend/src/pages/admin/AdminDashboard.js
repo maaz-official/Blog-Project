@@ -5,13 +5,21 @@ import PostsChart from './adminComponents/charts/PostsChart'; // Separate compon
 import UsersChart from './adminComponents/charts/UsersChart'; // Separate component for Users chart
 import CategoriesChart from './adminComponents/charts/CategoriesChart'; // Separate component for Categories chart
 import TagsChart from './adminComponents/charts/TagsChart'; // Separate component for Tags chart
+import { useGetUsersQuery } from '../../slices/userApiSlice'; // Import Redux Query hook
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
 
 function AdminDashboard() {
-  // Sample data for now
-  const postCount = 120;
+  const postCount = 120; // For simplicity, these are still hardcoded
   const categoryCount = 10;
   const tagCount = 30;
-  const userCount = 50;
+
+  const { data: users, isLoading, isError, error } = useGetUsersQuery();
+
+  if (isLoading) return <Loader />;
+  if (isError) return <Message variant="error">{error?.data?.message || 'Error loading dashboard data'}</Message>;
+
+  const userCount = users.length; // Get the user count from the API
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -24,14 +32,14 @@ function AdminDashboard() {
 
         {/* Chart Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          {/* Render the chart with sample data */}
+          {/* Overview Chart */}
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-bold mb-4">Overview</h3>
             <DashboardChart
               postCount={postCount}
               categoryCount={categoryCount}
               tagCount={tagCount}
-              userCount={userCount}
+              userCount={userCount} // Pass dynamic user count to DashboardChart
             />
           </div>
 
@@ -45,7 +53,7 @@ function AdminDashboard() {
           {/* Users Chart */}
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-xl font-bold mb-4">Users Overview</h3>
-            <UsersChart />
+            <UsersChart users={users} /> {/* Pass real users data from Redux */}
             <p className="text-gray-500 text-sm mt-2">Last 30 days</p>
           </div>
 
