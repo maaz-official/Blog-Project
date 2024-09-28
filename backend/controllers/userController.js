@@ -107,28 +107,72 @@ const updateUserProfile = async (req, res) => {
 // @desc    Get all users (Admin only)
 // @route   GET /api/users
 // @access  Private/Admin
-const getUsers = async (req, res) => {
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.status(200).json(users);
+});
 
-};
 
-// @desc    Get user by ID
+// @desc    Get user by ID (Admin only)
 // @route   GET /api/users/:id
 // @access  Private/Admin
-const getUserById = async (req, res) => {
-};
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
   
-// @desc    Update user
+// @desc    Update user (Admin only)
 // @route   PUT /api/users/:id
 // @access  Private/Admin
-const updateUser = async (req, res) => {
-  };
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.fullName = req.body.fullName || user.fullName;
+    user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
+    user.username = req.body.username || user.username;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      username: updatedUser.username,
+      profileImage: updatedUser.profileImage,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
   
 
-// @desc    Delete user
+// @desc    Delete user (Admin only)
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
-const deleteUser = async (req, res) => {
-  };
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.status(200).json({ message: 'User removed' });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
   
 
 export {

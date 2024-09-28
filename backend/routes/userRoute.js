@@ -1,29 +1,28 @@
 import express from 'express';
-const router = express.Router();
 import {
   authUser,
   registerUser,
+  getUserById,
   logoutUser,
+  updateUser,
+  getUserProfile,
+  updateUserProfile,
+  getUsers,
+  deleteUser,
 } from '../controllers/userController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
-// Public routes
-router.route('/register').post(registerUser); // Register new user
-router.post('/auth', authUser); // User login
-router.post('/logout', logoutUser); // User logout
+const router = express.Router();
 
-// Protected routes (only for authenticated users)
-// Added 'upload.single' middleware for profile image upload
-// router
-//   .route('/profile')
-//   .get(protect, getUserProfile)
-//   .put(protect, upload.single('image'), updateUserProfile); // Update profile with image upload
-
-// // Admin routes (only for admins)
-// router.route('/').get(protect, admin, getUsers); // Get all users (admin only)
-// router
-//   .route('/:id')
-//   .delete(protect, admin, deleteUser)
-//   .get(protect, admin, getUserById)
-//   .put(protect, admin, updateUser); // Get, update, delete user by ID (admin only)
+router.route('/').get(protect, admin, getUsers);
+router.route('/register').post(registerUser);
+router.route('/auth').post(authUser);
+router.route('/logout').post(logoutUser);
+router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+router
+  .route('/:id')
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser)
+  .delete(protect, admin, deleteUser);
 
 export default router;
