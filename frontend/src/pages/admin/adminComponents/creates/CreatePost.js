@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Select, MenuItem, Typography, FormControl, InputLabel, Grid, IconButton, Stack, useMediaQuery } from '@mui/material';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // Import highlight.js theme
-import { PhotoCamera, UploadFile } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Select, MenuItem, Typography, FormControl, InputLabel, Grid, IconButton, useMediaQuery } from '@mui/material';
+import { PhotoCamera } from '@mui/icons-material';
+import QuillEditor from '../../quill/QuillEditor';  // Import the QuillEditor component
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [tags, setTags] = useState([]);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('');  // Content managed via QuillEditor
   const [seoTitle, setSeoTitle] = useState('');
   const [seoDescription, setSeoDescription] = useState('');
-  const [status, setStatus] = useState('draft'); // For post status
-  const [summary, setSummary] = useState(''); // Optional summary
-  const [author, setAuthor] = useState(''); // For selecting the author
-  const [wordCount, setWordCount] = useState(0); // Word counter for content
-  const [uploadedImage, setUploadedImage] = useState(null); // For image upload
-  const [uploadedFile, setUploadedFile] = useState(null); // For file upload
-  const [imageError, setImageError] = useState(false); // For main image validation
+  const [author, setAuthor] = useState('');
+  const [uploadedImage, setUploadedImage] = useState(null);  // Image upload
+  const [imageError, setImageError] = useState(false);  // Main image validation error
 
   const isMobile = useMediaQuery('(max-width:600px)');
 
@@ -28,23 +21,9 @@ const CreatePost = () => {
   const availableTags = ['React', 'JavaScript', 'Web Development', 'SEO', 'Programming'];
   const availableAuthors = ['John Doe', 'Jane Smith', 'Alex Johnson'];
 
-  // Syntax highlighting setup for code blocks
-  useEffect(() => {
-    hljs.configure({
-      languages: ['javascript', 'html', 'css', 'python', 'bash', 'json'],
-    });
-  }, []);
-
-  // Handle content change and word count
-  const handleContentChange = (value) => {
-    setContent(value);
-    setWordCount(value.replace(/<(.|\n)*?>/g, '').split(/\s+/).filter((word) => word.length > 0).length);
-  };
-
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (!uploadedImage) {
       setImageError(true);
       return;
@@ -57,34 +36,11 @@ const CreatePost = () => {
       content,
       seoTitle,
       seoDescription,
-      status,
-      summary,
       author,
       uploadedImage,
-      uploadedFile,
     };
     console.log('Post Data:', postData);
     // Perform API call here
-  };
-
-  // Handle post preview
-  const handlePreview = () => {
-    if (!uploadedImage) {
-      setImageError(true);
-      return;
-    }
-    const postPreviewData = {
-      title,
-      category,
-      tags,
-      content,
-      seoTitle,
-      seoDescription,
-      summary,
-      author,
-      status: 'Preview',
-    };
-    console.log('Preview Data:', postPreviewData);
   };
 
   // Handle image upload
@@ -96,28 +52,6 @@ const CreatePost = () => {
       setImageError(false); // Reset error on successful image upload
     };
     reader.readAsDataURL(file);
-  };
-
-  // Handle file upload
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    setUploadedFile(file);
-  };
-
-  // Reset form
-  const handleReset = () => {
-    setTitle('');
-    setCategory('');
-    setTags([]);
-    setContent('');
-    setSeoTitle('');
-    setSeoDescription('');
-    setStatus('draft');
-    setSummary('');
-    setAuthor('');
-    setUploadedImage(null);
-    setUploadedFile(null);
-    setWordCount(0);
   };
 
   return (
@@ -238,36 +172,6 @@ const CreatePost = () => {
             />
           </Grid>
 
-          {/* Post Summary */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Post Summary (Optional)"
-              variant="outlined"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              multiline
-              rows={2}
-              sx={{ mb: 2 }}
-            />
-          </Grid>
-
-          {/* Post Status */}
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel sx={{ color: '#1976D2' }}>Status</InputLabel>
-              <Select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                label="Status"
-                sx={{ mb: 2 }}
-              >
-                <MenuItem value="draft">Draft</MenuItem>
-                <MenuItem value="published">Published</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
           {/* Image Upload */}
           <Grid item xs={12} md={6}>
             <Typography>Upload Main Image (Required)</Typography>
@@ -287,43 +191,23 @@ const CreatePost = () => {
             )}
           </Grid>
 
-          {/* File Upload for Code Files */}
-          <Grid item xs={12} md={6}>
-            <Typography>Upload Project Files (Optional)</Typography>
-            <IconButton color="primary" aria-label="upload file" component="label">
-              <input hidden accept=".js,.html,.css,.py" type="file" onChange={handleFileUpload} />
-              <UploadFile />
-            </IconButton>
-            {uploadedFile && (
-              <Typography variant="body2" color="textSecondary" mt={2}>
-                {uploadedFile.name}
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
-
-        {/* Post Content */}
-        <Box mb={4}>
-          <Typography mb={1} fontWeight="medium">
-            Content
-          </Typography>
-          <ReactQuill
-            value={content}
-            onChange={handleContentChange}
-            theme="snow"
-            modules={quillModules}
-            formats={quillFormats}
-            style={{ 
-              height: isMobile ? '200px' : '300px', 
-              borderRadius: '10px', 
-              backgroundColor: '#f9f9f9', 
-              border: '1px solid #e0e0e0' 
+          {/* QuillEditor Integration */}
+          <Box
+            mb={4}
+            sx={{
+              backgroundColor: '#ffffff',
+              borderRadius: '16px',
+              padding: isMobile ? 2 : 4,
+              border: '1px solid #e0e0e0',
+              width: '100%',
             }}
-          />
-          <Typography variant="caption" color="textSecondary">
-            Word Count: {wordCount}
-          </Typography>
-        </Box>
+          >
+            <QuillEditor 
+              value={content} 
+              onChange={(value) => setContent(value)}  // Pass content state to QuillEditor
+            />
+          </Box>
+        </Grid>
 
         {/* Submit and Preview Buttons */}
         <Grid container spacing={2}>
@@ -332,7 +216,6 @@ const CreatePost = () => {
               variant="outlined"
               color="primary"
               fullWidth
-              onClick={handlePreview}
               sx={{ py: 1.5, '&:hover': { backgroundColor: '#f5f5f5' } }}
             >
               Preview Post
@@ -356,45 +239,9 @@ const CreatePost = () => {
             </Button>
           </Grid>
         </Grid>
-        <Button
-          variant="text"
-          color="error"
-          onClick={handleReset}
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Reset Form
-        </Button>
       </form>
     </Box>
   );
 };
-
-// Custom Quill modules and formats for code blocks
-const quillModules = {
-  syntax: true, // Enable syntax highlighting
-  toolbar: [
-    [{ header: [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image', 'code-block'],
-    [{ align: [] }],
-    ['clean'], // Clear formatting
-  ],
-};
-
-const quillFormats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'list',
-  'bullet',
-  'link',
-  'image',
-  'code-block',
-  'align',
-];
 
 export default CreatePost;
