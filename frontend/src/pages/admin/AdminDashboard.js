@@ -1,7 +1,10 @@
 import React from 'react';
-import { HomeIcon, DocumentTextIcon, UserIcon, CogIcon, CollectionIcon } from '@heroicons/react/outline'; // Heroicons v1
-import { Link } from 'react-router-dom';
-import DashboardChart from './charts/DashboardChart'; // Import the chart component
+import AdminSidebar from './adminComponents/sidebar/AdminSidebar'; // Import the Sidebar component
+import DashboardChart from './adminComponents/charts/DashboardChart';
+import PostsChart from './adminComponents/charts/PostsChart'; // Separate component for Posts chart
+import UsersChart from './adminComponents/charts/UsersChart'; // Separate component for Users chart
+import CategoriesChart from './adminComponents/charts/CategoriesChart'; // Separate component for Categories chart
+import TagsChart from './adminComponents/charts/TagsChart'; // Separate component for Tags chart
 
 function AdminDashboard() {
   // Sample data for now
@@ -11,59 +14,54 @@ function AdminDashboard() {
   const userCount = 50;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="bg-gray-800 text-white w-64 flex flex-col">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        </div>
-        <ul className="space-y-4 p-6">
-          <li>
-            <Link to="/admin" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-md">
-              <HomeIcon className="h-6 w-6" />
-              <span>Dashboard Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/posts" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-md">
-              <DocumentTextIcon className="h-6 w-6" />
-              <span>Manage Posts</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/users" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-md">
-              <UserIcon className="h-6 w-6" />
-              <span>Manage Users</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/categories" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-md">
-              <CollectionIcon className="h-6 w-6" />
-              <span>Manage Categories</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin/settings" className="flex items-center space-x-3 hover:bg-gray-700 p-2 rounded-md">
-              <CogIcon className="h-6 w-6" />
-              <span>Settings</span>
-            </Link>
-          </li>
-        </ul>
-      </div>
+      <AdminSidebar /> {/* Using the Sidebar component */}
 
       {/* Main Content */}
-      <div className="flex-grow p-6 bg-gray-100">
-        <h1 className="text-3xl font-bold mb-6">Welcome to Admin Dashboard</h1>
+      <div className="flex-grow p-8">
+        <h1 className="text-4xl font-semibold mb-6 text-gray-800">Welcome to Admin Dashboard</h1>
 
-        {/* Render the chart with sample data */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-bold mb-4">Overview</h3>
-          <DashboardChart
-            postCount={postCount}
-            categoryCount={categoryCount}
-            tagCount={tagCount}
-            userCount={userCount}
-          />
+        {/* Chart Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {/* Render the chart with sample data */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4">Overview</h3>
+            <DashboardChart
+              postCount={postCount}
+              categoryCount={categoryCount}
+              tagCount={tagCount}
+              userCount={userCount}
+            />
+          </div>
+
+          {/* Posts Chart */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4">Posts Overview</h3>
+            <PostsChart />
+            <p className="text-gray-500 text-sm mt-2">Last 7 days</p>
+          </div>
+
+          {/* Users Chart */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4">Users Overview</h3>
+            <UsersChart />
+            <p className="text-gray-500 text-sm mt-2">Last 30 days</p>
+          </div>
+
+          {/* Categories Chart */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4">Categories Overview</h3>
+            <CategoriesChart />
+            <p className="text-gray-500 text-sm mt-2">Last 30 days</p>
+          </div>
+
+          {/* Tags Chart */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-bold mb-4">Tags Overview</h3>
+            <TagsChart />
+            <p className="text-gray-500 text-sm mt-2">Last 7 days</p>
+          </div>
         </div>
       </div>
     </div>
