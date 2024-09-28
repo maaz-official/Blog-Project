@@ -15,7 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import CreatePost from './pages/admin/adminComponents/creates/CreatePost';
 import Drafts from './pages/admin/adminComponents/Lists/DraftPosts';
 import ListAllUsers from './pages/admin/adminComponents/Lists/ListAllUsers';
-// import AdminDashboard from './pages/AdminDashboard'; // Example admin page
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -45,13 +45,10 @@ function App() {
             <Route path="/admin/posts/create" element={<CreatePost />} />
             <Route path="/admin/posts/drafts" element={<Drafts />} />
             <Route path="/admin/users" element={<ListAllUsers />} />
-            {/* <Route path="/posts" element={<Posts />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/tags" element={<Tags />} /> */}
-          
-          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> Admin route for dashboard */}
         </Route>
+
+        {/* Not Found Route */}
+        <Route path="*" element={<NotFoundPage />} /> {/* Catch-all route for undefined paths */}
       </Routes>
 
       <Footer />
