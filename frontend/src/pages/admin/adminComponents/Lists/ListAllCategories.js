@@ -1,26 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetCategoriesQuery, useDeleteCategoryMutation } from '../../../../slices/categoryApiSlice';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import Loader from '../../../../components/Loader';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../layout/AdminLayout';
+import PermissionAsk from '../../../../components/PermissionAsk'; // Import PermissionAsk component
 
 const ListAllCategories = () => {
-  // Using a function to call the query so that we can pass parameters correctly
-  const { data: categories = [], isLoading, isError } = useGetCategoriesQuery(); // Archived false as a string
+  const { data: categories = [], isLoading, isError } = useGetCategoriesQuery(); // Fetch categories
 
   const [deleteCategory] = useDeleteCategoryMutation();
   const navigate = useNavigate();
+  const [showPermissionAsk, setShowPermissionAsk] = useState(false); // State to control PermissionAsk modal visibility
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Store category ID for deletion
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
-      try {
-        await deleteCategory(id).unwrap();
-        toast.success('Category deleted successfully');
-      } catch (err) {
-        toast.error('Failed to delete category');
-      }
+  const handleDeleteClick = (id) => {
+    setSelectedCategoryId(id); // Set the selected category ID
+    setShowPermissionAsk(true); // Show the permission modal
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteCategory(selectedCategoryId).unwrap();
+      toast.success('Category deleted successfully');
+    } catch (err) {
+      toast.error('Failed to delete category');
+    } finally {
+      setShowPermissionAsk(false); // Hide the modal after deletion
     }
   };
 
@@ -74,7 +81,7 @@ const ListAllCategories = () => {
                         <FaEdit className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(category._id)}
+                        onClick={() => handleDeleteClick(category._id)} // Call handleDeleteClick to ask for permission
                         className="text-red-500 hover:text-red-700"
                       >
                         <FaTrash className="w-5 h-5" />
@@ -86,6 +93,15 @@ const ListAllCategories = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Render PermissionAsk modal conditionally */}
+        {showPermissionAsk && (
+          <PermissionAsk
+            onConfirm={handleDeleteConfirm} // Confirm deletion
+            onCancel={() => setShowPermissionAsk(false)} // Cancel deletion
+            message="Are you sure you want to delete this category?"
+          />
+        )}
       </div>
     </AdminLayout>
   );

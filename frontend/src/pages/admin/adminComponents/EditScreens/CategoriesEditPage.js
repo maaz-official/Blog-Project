@@ -4,6 +4,7 @@ import { useGetCategoryByIdQuery, useUpdateCategoryMutation, useToggleArchiveCat
 import Loader from '../../../../components/Loader';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../layout/AdminLayout';
+import PermissionAsk from '../../../../components/PermissionAsk';
 
 const CategoriesEditPage = () => {
   const { id } = useParams(); // Get the category ID from the URL
@@ -18,6 +19,9 @@ const CategoriesEditPage = () => {
     description: '',
   });
 
+  const [showPermissionAsk, setShowPermissionAsk] = useState(false); // State to show the PermissionAsk modal
+  const [actionType, setActionType] = useState(''); // State to track which action to confirm
+
   useEffect(() => {
     if (category) {
       setCategoryData({
@@ -29,21 +33,41 @@ const CategoriesEditPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setActionType('update');
+    setShowPermissionAsk(true); // Show the permission ask modal before updating
+  };
+
+  const handleConfirmUpdate = async () => {
     try {
       await updateCategory({ id, data: categoryData }).unwrap();
       toast.success('Category updated successfully');
+      setShowPermissionAsk(false);
       navigate('/admin/categories'); // Redirect to categories list
     } catch (err) {
       toast.error('Failed to update category');
     }
   };
 
-  const handleArchiveToggle = async () => {
+  const handleArchiveToggle = () => {
+    setActionType('archive');
+    setShowPermissionAsk(true); // Show the permission ask modal before archiving/unarchiving
+  };
+
+  const handleConfirmArchiveToggle = async () => {
     try {
       await toggleArchiveCategory(id).unwrap();
       toast.success(`Category ${category.isArchived ? 'unarchived' : 'archived'} successfully`);
+      setShowPermissionAsk(false);
     } catch (err) {
       toast.error('Failed to toggle archive status');
+    }
+  };
+
+  const handleConfirm = () => {
+    if (actionType === 'update') {
+      handleConfirmUpdate();
+    } else if (actionType === 'archive') {
+      handleConfirmArchiveToggle();
     }
   };
 
@@ -111,6 +135,15 @@ const CategoriesEditPage = () => {
             </button>
           </div>
         </form>
+
+        {/* Render PermissionAsk modal conditionally */}
+        {showPermissionAsk && (
+          <PermissionAsk
+            onConfirm={handleConfirm}
+            onCancel={() => setShowPermissionAsk(false)}
+            message={`Are you sure you want to ${actionType === 'archive' ? (category?.isArchived ? 'unarchive' : 'archive') : 'update'} this category?`}
+          />
+        )}
       </div>
     </AdminLayout>
   );
