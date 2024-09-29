@@ -8,7 +8,11 @@ const postSchema = new mongoose.Schema({
     },
     content: { type: String, required: true },
     coverImage: { type: String },
-    category: { type: String },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,  // Reference to the Category model
+        ref: 'Category',  // Referencing the Category model
+        required: true,   // Category is required for each post
+    },
     tags: [{ type: String }],
     likes: { type: Number, default: 0 },
     shares: { type: Number, default: 0 },

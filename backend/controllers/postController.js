@@ -1,12 +1,13 @@
-import Post from '../model/postModel.js'; // Assuming your Post model is in the models folder
+import Post from '../model/postModel.js';
+import Category from '../model/categoryModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
 // @desc    Get All Posts
 // @route   GET /api/posts/
 // @access  Public
 export const getAllPosts = asyncHandler(async (req, res) => {
-    const posts = await Post.find(); // Fetch all posts from MongoDB
-    res.json(posts); // Send all posts as JSON response
+    const posts = await Post.find().populate('category', 'name description'); // Populate category details
+    res.json(posts);
 });
 
 // @desc    Get Post By ID
@@ -16,10 +17,10 @@ export const getPostById = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     // Fetch post by ID from MongoDB
-    const post = await Post.findById(id);
+    const post = await Post.findById(id).populate('category', 'name description');
 
     if (post) {
-        res.json(post); // Send the found post
+        res.json(post);
     } else {
         res.status(404).json({ message: "Post not found" });
     }
@@ -43,13 +44,20 @@ export const createPost = asyncHandler(async (req, res) => {
         comments,
     } = req.body;
 
+    // Validate if the category exists
+    const categoryExists = await Category.findById(category);
+
+    if (!categoryExists) {
+        return res.status(400).json({ message: 'Invalid category' });
+    }
+
     // Create new post using the Post model
     const post = new Post({
         title,
         author,
         content,
         coverImage,
-        category,
+        category,  // Use the valid category ID here
         tags,
         likes,
         shares,
@@ -87,12 +95,20 @@ export const updatePost = asyncHandler(async (req, res) => {
     const post = await Post.findById(id);
 
     if (post) {
-        // Update post details
+        // If category is provided, validate it
+        if (category) {
+            const categoryExists = await Category.findById(category);
+            if (!categoryExists) {
+                return res.status(400).json({ message: 'Invalid category' });
+            }
+            post.category = category;  // Update category if valid
+        }
+
+        // Update other post details
         post.title = title || post.title;
         post.author = author || post.author;
         post.content = content || post.content;
         post.coverImage = coverImage || post.coverImage;
-        post.category = category || post.category;
         post.tags = tags || post.tags;
         post.likes = likes || post.likes;
         post.shares = shares || post.shares;
