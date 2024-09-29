@@ -4,7 +4,8 @@ import {
     getCategories,
     getCategoryById,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    toggleArchiveCategory
 } from '../controllers/categoryController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -20,5 +21,9 @@ router.route('/:id')
     .get(getCategoryById)     // GET /api/categories/:id (Public)
     .put(protect, admin, updateCategory)      // PUT /api/categories/:id (Protected: Admin only)
     .delete(protect, admin, deleteCategory);  // DELETE /api/categories/:id (Protected: Admin only)
+
+// Route for toggling archive status (Protected: Admin only)
+router.route('/:id/archive')
+    .put(protect, admin, toggleArchiveCategory);  // PUT /api/categories/:id/archive (Protected: Admin only)
 
 export default router;

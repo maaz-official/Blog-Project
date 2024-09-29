@@ -10,6 +10,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isArchived: {
+        type: Boolean,
+        default: false, // By default, the category is not archived
+    },
 }, {
     timestamps: true,  // Adds createdAt and updatedAt fields
 });

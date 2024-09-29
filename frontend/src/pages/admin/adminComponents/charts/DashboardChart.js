@@ -9,7 +9,7 @@ import Message from '../../../../components/Message'; // Custom Message componen
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const DashboardChart = ({ categoryCount, tagCount }) => {
+const DashboardChart = ({ categoryCount = 0, tagCount = 0 }) => {
   // Fetch user data
   const { data: users, isLoading: isLoadingUsers, isError: isErrorUsers, error: errorUsers } = useGetUsersQuery();
   // Fetch posts data
@@ -37,7 +37,7 @@ const DashboardChart = ({ categoryCount, tagCount }) => {
     datasets: [
       {
         label: 'Count',
-        data: [postCount, categoryCount, tagCount, userCount], // Use dynamic postCount and userCount
+        data: [postCount, categoryCount, tagCount, userCount], // Use dynamic postCount, categoryCount, tagCount, and userCount
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)', // Posts
           'rgba(54, 162, 235, 0.6)', // Categories

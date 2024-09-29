@@ -19,6 +19,7 @@ import ListAllCategories from './pages/admin/adminComponents/Lists/ListAllCatego
 import NotFoundPage from './pages/NotFoundPage';
 import CategoriesEditPage from './pages/admin/adminComponents/EditScreens/CategoriesEditPage.js';
 import CreateCategoryPage from './pages/admin/adminComponents/creates/CreateCategoryPage.js';
+import ArchivedCategoriesPage from './pages/admin/adminComponents/Lists/ArchivedCategoriesPage.js';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
             <Route path="/admin/categories" element={<ListAllCategories />} />
             <Route path="/admin/categories/edit/:id" element={<CategoriesEditPage />} />
             <Route path="/admin/categories/create" element={<CreateCategoryPage />} />
+            <Route path="/admin/categories/archived" element={<ArchivedCategoriesPage />} /> {/* Archived Categories Page */}
 
         </Route>
 

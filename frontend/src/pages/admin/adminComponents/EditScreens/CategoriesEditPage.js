@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetCategoryByIdQuery, useUpdateCategoryMutation } from '../../../../slices/categoryApiSlice';
+import { useGetCategoryByIdQuery, useUpdateCategoryMutation, useToggleArchiveCategoryMutation } from '../../../../slices/categoryApiSlice'; 
 import Loader from '../../../../components/Loader';
 import { toast } from 'react-toastify';
-import AdminLayout from '../../layout/AdminLayout'; // Import the AdminLayout
+import AdminLayout from '../../layout/AdminLayout';
 
 const CategoriesEditPage = () => {
   const { id } = useParams(); // Get the category ID from the URL
@@ -11,14 +11,13 @@ const CategoriesEditPage = () => {
 
   const { data: category, isLoading, isError } = useGetCategoryByIdQuery(id);
   const [updateCategory, { isLoading: isUpdating }] = useUpdateCategoryMutation();
+  const [toggleArchiveCategory] = useToggleArchiveCategoryMutation();
 
-  // Local state to manage the form inputs
   const [categoryData, setCategoryData] = useState({
     name: '',
     description: '',
   });
 
-  // Populate form with fetched category data when it's available
   useEffect(() => {
     if (category) {
       setCategoryData({
@@ -33,9 +32,18 @@ const CategoriesEditPage = () => {
     try {
       await updateCategory({ id, data: categoryData }).unwrap();
       toast.success('Category updated successfully');
-      navigate('/admin/categories'); // Redirect to the categories list page after update
+      navigate('/admin/categories'); // Redirect to categories list
     } catch (err) {
       toast.error('Failed to update category');
+    }
+  };
+
+  const handleArchiveToggle = async () => {
+    try {
+      await toggleArchiveCategory(id).unwrap();
+      toast.success(`Category ${category.isArchived ? 'unarchived' : 'archived'} successfully`);
+    } catch (err) {
+      toast.error('Failed to toggle archive status');
     }
   };
 
@@ -80,15 +88,24 @@ const CategoriesEditPage = () => {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               disabled={isUpdating}
             >
               {isUpdating ? 'Updating...' : 'Update Category'}
             </button>
+
+            <button
+              type="button"
+              onClick={handleArchiveToggle}
+              className={`bg-${category?.isArchived ? 'green' : 'yellow'}-500 hover:bg-${category?.isArchived ? 'green' : 'yellow'}-700 text-white font-bold py-2 px-4 rounded`}
+            >
+              {category?.isArchived ? 'Unarchive' : 'Archive'}
+            </button>
+
             <button
               type="button"
               onClick={() => navigate('/admin/categories')}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
             >
               Cancel
             </button>

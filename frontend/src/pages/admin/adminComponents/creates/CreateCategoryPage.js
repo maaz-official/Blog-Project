@@ -1,26 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCreateCategoryMutation } from '../../../../slices/categoryApiSlice'; // Assuming this is set up
-import Loader from '../../../../components/Loader';
+import { useCreateCategoryMutation } from '../../../../slices/categoryApiSlice';
 import { toast } from 'react-toastify';
-import AdminLayout from '../../layout/AdminLayout'; // Import the AdminLayout
+import AdminLayout from '../../layout/AdminLayout';
 
 const CreateCategoryPage = () => {
-  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [isArchived, setIsArchived] = useState(false);  // Add state for archive status
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
-
-  // State to track the form inputs
-  const [categoryData, setCategoryData] = useState({
-    name: '',
-    description: '',
-  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await createCategory(categoryData).unwrap();
+      await createCategory({ name, description, isArchived }).unwrap();
       toast.success('Category created successfully');
-      navigate('/admin/categories'); // Redirect to category list page after creation
+      setName('');  // Reset form
+      setDescription('');
+      setIsArchived(false);
     } catch (err) {
       toast.error('Failed to create category');
     }
@@ -41,8 +38,8 @@ const CreateCategoryPage = () => {
             <input
               type="text"
               id="name"
-              value={categoryData.name}
-              onChange={(e) => setCategoryData({ ...categoryData, name: e.target.value })}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="border rounded w-full py-2 px-3 text-gray-700"
               required
             />
@@ -54,27 +51,32 @@ const CreateCategoryPage = () => {
             </label>
             <textarea
               id="description"
-              value={categoryData.description}
-              onChange={(e) => setCategoryData({ ...categoryData, description: e.target.value })}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="border rounded w-full py-2 px-3 text-gray-700"
               required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="isArchived">
+              Archive Category?
+            </label>
+            <input
+              type="checkbox"
+              id="isArchived"
+              checked={isArchived}
+              onChange={(e) => setIsArchived(e.target.checked)}  // Toggle archive status
             />
           </div>
 
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               disabled={isLoading}
             >
-              {isLoading ? <Loader /> : 'Create Category'}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/admin/categories')}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Cancel
+              {isLoading ? 'Creating...' : 'Create Category'}
             </button>
           </div>
         </form>

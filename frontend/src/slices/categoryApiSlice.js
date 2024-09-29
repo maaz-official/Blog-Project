@@ -3,15 +3,15 @@ import { apiSlice } from './apiSlices';
 
 export const categoryApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Fetch all categories
     getCategories: builder.query({
-      query: () => ({
+      // Ensure the query is structured properly for fetching archived categories
+      query: ({ archived } = {}) => ({
         url: CATEGORY_URL,
         method: 'GET',
+        params: archived !== undefined ? { archived } : {},  // Check if archived is defined, else send empty params
       }),
     }),
 
-    // Fetch a single category by ID
     getCategoryById: builder.query({
       query: (id) => ({
         url: `${CATEGORY_URL}/${id}`,
@@ -19,7 +19,6 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // Create a new category
     createCategory: builder.mutation({
       query: (newCategory) => ({
         url: CATEGORY_URL,
@@ -28,7 +27,6 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // Delete category by ID
     deleteCategory: builder.mutation({
       query: (id) => ({
         url: `${CATEGORY_URL}/${id}`,
@@ -36,12 +34,18 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // Update category by ID
     updateCategory: builder.mutation({
       query: ({ id, data }) => ({
         url: `${CATEGORY_URL}/${id}`,
         method: 'PUT',
         body: data,
+      }),
+    }),
+
+    toggleArchiveCategory: builder.mutation({
+      query: (id) => ({
+        url: `${CATEGORY_URL}/${id}/archive`,
+        method: 'PUT',
       }),
     }),
   }),
@@ -50,7 +54,8 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetCategoriesQuery,
   useGetCategoryByIdQuery,
-  useCreateCategoryMutation,  // Export createCategoryMutation hook
+  useCreateCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,
+  useToggleArchiveCategoryMutation,
 } = categoryApiSlice;
