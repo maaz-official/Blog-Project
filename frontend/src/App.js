@@ -15,7 +15,10 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import CreatePost from './pages/admin/adminComponents/creates/CreatePost';
 import Drafts from './pages/admin/adminComponents/Lists/DraftPosts';
 import ListAllUsers from './pages/admin/adminComponents/Lists/ListAllUsers';
+import ListAllCategories from './pages/admin/adminComponents/Lists/ListAllCategories.js';
 import NotFoundPage from './pages/NotFoundPage';
+import CategoriesEditPage from './pages/admin/adminComponents/EditScreens/CategoriesEditPage.js';
+import CreateCategoryPage from './pages/admin/adminComponents/creates/CreateCategoryPage.js';
 
 function App() {
   return (
@@ -45,6 +48,10 @@ function App() {
             <Route path="/admin/posts/create" element={<CreatePost />} />
             <Route path="/admin/posts/drafts" element={<Drafts />} />
             <Route path="/admin/users" element={<ListAllUsers />} />
+            <Route path="/admin/categories" element={<ListAllCategories />} />
+            <Route path="/admin/categories/edit/:id" element={<CategoriesEditPage />} />
+            <Route path="/admin/categories/create" element={<CreateCategoryPage />} />
+
         </Route>
 
         {/* Not Found Route */}

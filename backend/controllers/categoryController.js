@@ -1,4 +1,5 @@
-import Category from '../model/categoryModel.js';  // Assuming you save the Category model here
+import Category from '../model/categoryModel.js';
+import Post from '../model/postModel.js';  // Import Post model
 
 // @desc    Create a new category
 // @route   POST /api/categories
@@ -25,27 +26,44 @@ export const createCategory = async (req, res) => {
     }
 };
 
-// @desc    Get all categories
+// @desc    Get all categories with associated posts
 // @route   GET /api/categories
 // @access  Public
 export const getCategories = async (req, res) => {
     try {
+        // Fetch all categories
         const categories = await Category.find({});
-        res.status(200).json(categories);
+
+        // For each category, fetch the posts associated with it
+        const categoriesWithPosts = await Promise.all(categories.map(async (category) => {
+            const posts = await Post.find({ category: category._id }).select('title author');  // Fetch posts by category ID
+            return {
+                ...category._doc,  // Spread category data
+                posts,  // Add associated posts
+            };
+        }));
+
+        res.status(200).json(categoriesWithPosts);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// @desc    Get single category by ID
+// @desc    Get single category by ID with associated posts
 // @route   GET /api/categories/:id
 // @access  Public
 export const getCategoryById = async (req, res) => {
     try {
+        // Fetch the category by ID
         const category = await Category.findById(req.params.id);
 
         if (category) {
-            res.status(200).json(category);
+            // Fetch posts for this category
+            const posts = await Post.find({ category: category._id }).select('title author');
+            res.status(200).json({
+                ...category._doc,
+                posts,
+            });
         } else {
             res.status(404).json({ message: 'Category not found' });
         }

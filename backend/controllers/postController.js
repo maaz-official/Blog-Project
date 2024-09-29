@@ -2,13 +2,14 @@ import Post from '../model/postModel.js';
 import Category from '../model/categoryModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
-// @desc    Get All Posts
+// @desc    Get All Posts with category
 // @route   GET /api/posts/
 // @access  Public
 export const getAllPosts = asyncHandler(async (req, res) => {
     const posts = await Post.find().populate('category', 'name description'); // Populate category details
     res.json(posts);
 });
+
 
 // @desc    Get Post By ID
 // @route   GET /api/posts/:id
