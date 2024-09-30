@@ -165,21 +165,7 @@ A heartfelt thank you to all the amazing contributors who have helped make this 
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>
-        <strong>@ameer-hamza26</strong>
-        <br>
-        <img src="https://github.com/ameer-hamza26.png?size=32" alt="Ameer Hamza's Avatar" width="32" height="32">
-      </td>
-      <td>
-        <a href="https://github.com/ameer-hamza26" target="_blank">View Profile</a>
-      </td>
-      <td>
-        <span style="color: #3f51b5; font-weight: bold;">📚 Documentation</span><br>
-        <span style="color: #4caf50; font-weight: bold;">🎨 Amazing Design Work</span>
-      </td>
-    </tr>
-    <tr>
+  <tr>
       <td>
         <strong>@maaz-official</strong>
         <br>
@@ -195,13 +181,29 @@ A heartfelt thank you to all the amazing contributors who have helped make this 
         <span style="color: #f44336; font-weight: bold;">🔍 Extensive Testing & Feedback</span>
       </td>
     </tr>
+    <tr>
+      <td>
+        <strong>@ameer-hamza26</strong>
+        <br>
+        <img src="https://github.com/ameer-hamza26.png?size=32" alt="Ameer Hamza's Avatar" width="32" height="32">
+      </td>
+      <td>
+        <a href="https://github.com/ameer-hamza26" target="_blank">View Profile</a>
+      </td>
+      <td>
+        <span style="color: #3f51b5; font-weight: bold;">📚 Documentation</span><br>
+        <span style="color: #4caf50; font-weight: bold;">🎨 Amazing Design Work</span>
+      </td>
+    </tr>
+    
   </tbody>
 </table>
 
 ### Special Thanks to:
 
-- **@ameer-hamza26** for their amazing design work! 🎨
 - **@maaz-official** for extensive testing and feedback! 🔍
+- **@ameer-hamza26** for their amazing design work! 🎨
+
 
 
 ## 🖥️ Tech Stack
