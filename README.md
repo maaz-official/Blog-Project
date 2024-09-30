@@ -154,61 +154,48 @@ git push origin main
 
 A heartfelt thank you to all the amazing contributors who have helped make this project a success! 🙌 Your efforts are greatly appreciated!
 
-<style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  th {
-    background-color: #f2f2f2;
-  }
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-</style>
+### Contributors Table
 
 <table>
-  <tr>
-    <th>Contributor</th>
-    <th>GitHub Profile</th>
-    <th>Contributions</th>
-  </tr>
-  <tr>
-    <td>
-      <strong>@ameer-hamza26</strong>
-      <br>
-      <img src="https://github.com/ameer-hamza26.png?size=32" alt="Ameer Hamza's Avatar" width="32" height="32">
-    </td>
-    <td>
-      <a href="https://github.com/ameer-hamza26" target="_blank">View Profile</a>
-    </td>
-    <td>
-      <span style="color: #ff5722;">🐛 Bug Fixes</span><br>
-      <span style="color: #3f51b5;">📚 Documentation</span><br>
-      <span style="color: #4caf50;">🎨 Amazing Design Work</span>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <strong>@maaz-official</strong>
-      <br>
-      <img src="https://github.com/maaz-official.png?size=32" alt="Maaz Official's Avatar" width="32" height="32">
-    </td>
-    <td>
-      <a href="https://github.com/maaz-official" target="_blank">View Profile</a>
-    </td>
-    <td>
-      <span style="color: #ffeb3b;">🌟 New Features</span><br>
-      <span style="color: #2196f3;">📝 Code Reviews</span><br>
-      <span style="color: #f44336;">🔍 Extensive Testing & Feedback</span>
-    </td>
-  </tr>
+  <thead>
+    <tr>
+      <th style="text-align:left; padding: 10px; background-color: #f2f2f2;">Contributor</th>
+      <th style="text-align:left; padding: 10px; background-color: #f2f2f2;">GitHub Profile</th>
+      <th style="text-align:left; padding: 10px; background-color: #f2f2f2;">Contributions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <strong>@ameer-hamza26</strong>
+        <br>
+        <img src="https://github.com/ameer-hamza26.png?size=32" alt="Ameer Hamza's Avatar" width="32" height="32">
+      </td>
+      <td>
+        <a href="https://github.com/ameer-hamza26" target="_blank">View Profile</a>
+      </td>
+      <td>
+        <span style="color: #3f51b5; font-weight: bold;">📚 Documentation</span><br>
+        <span style="color: #4caf50; font-weight: bold;">🎨 Amazing Design Work</span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>@maaz-official</strong>
+        <br>
+        <img src="https://github.com/maaz-official.png?size=32" alt="Maaz Official's Avatar" width="32" height="32">
+      </td>
+      <td>
+        <a href="https://github.com/maaz-official" target="_blank">View Profile</a>
+      </td>
+      <td>
+        <span style="color: #ffeb3b; font-weight: bold;">🌟 New Features</span><br>
+        <span style="color: #ff5722; font-weight: bold;">🐛 Bug Fixes</span><br>
+        <span style="color: #2196f3; font-weight: bold;">📝 Code Reviews</span><br>
+        <span style="color: #f44336; font-weight: bold;">🔍 Extensive Testing & Feedback</span>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 ### Special Thanks to:
