@@ -2,5 +2,5 @@ export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localho
 export const POST_URL = '/api/posts';
 export const USER_URL = '/api/users';
 export const CATEGORY_URL = '/api/categories';
-// export const STRIPE_URL = '/api/config/stripe';
+export const TAG_URL = '/api/tags';
 // export const UPLOAD_URL = '/api/upload'

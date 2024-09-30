@@ -1,7 +1,8 @@
 import express from 'express';
 import userRoutes from './routes/userRoute.js';
 import postRoutes from './routes/postRoutes.js'; // Import post routes
-import categoryRoutes from './routes/categoryRoutes.js'
+import categoryRoutes from './routes/categoryRoutes.js'; // Import category routes
+import tagRoutes from './routes/tagsRoutes.js'; // Import tag routes
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
@@ -34,7 +35,8 @@ app.use(cookieParser());
 // Define API routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes); // Use post routes
-app.use('/api/categories', categoryRoutes); // Use post routes
+app.use('/api/categories', categoryRoutes); // Use category routes
+app.use('/api/tags', tagRoutes); // Use tag routes
 
 // Root route for testing
 app.get('/', (req, res) => {

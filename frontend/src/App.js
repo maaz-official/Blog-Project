@@ -20,6 +20,10 @@ import NotFoundPage from './pages/NotFoundPage';
 import CategoriesEditPage from './pages/admin/adminComponents/EditScreens/CategoriesEditPage.js';
 import CreateCategoryPage from './pages/admin/adminComponents/creates/CreateCategoryPage.js';
 import ArchivedCategoriesPage from './pages/admin/adminComponents/Lists/ArchivedCategoriesPage.js';
+import ListAllTags from './pages/admin/adminComponents/Lists/ListAllTags.js';
+import CreateTagPage from './pages/admin/adminComponents/creates/CreateTagsPages.js';
+import TagsEditPage from './pages/admin/adminComponents/EditScreens/TagsEditPage.js';
+import ArchivedTagsPage from './pages/admin/adminComponents/Lists/ArchivedTagsPage.js';
 
 function App() {
   return (
@@ -53,6 +57,10 @@ function App() {
             <Route path="/admin/categories/edit/:id" element={<CategoriesEditPage />} />
             <Route path="/admin/categories/create" element={<CreateCategoryPage />} />
             <Route path="/admin/categories/archived" element={<ArchivedCategoriesPage />} /> {/* Archived Categories Page */}
+            <Route path="/admin/tags" element={<ListAllTags />} />
+            <Route path="/admin/tags/create" element={<CreateTagPage />} />
+            <Route path="/admin/tags/edit/:id" element={<TagsEditPage />} />
+            <Route path="/admin/tags/archived" element={<ArchivedTagsPage />} /> {/* Archived Categories Page */}
 
         </Route>
 
