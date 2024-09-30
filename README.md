@@ -3,6 +3,14 @@
 
 A modern blogging platform that allows users to create, edit, and publish blog posts with a variety of features such as tagging, commenting, SEO optimization, and social interactions like following authors, liking, and sharing posts. This project is built using TypeScript, Node.js, and MongoDB as the database.
 
+## Contributors ✨
+
+Thanks goes to these wonderful people:
+
+- [@ameer-hamza26](https://github.com/ameer-hamza26)
+- [@maaz-official](https://github.com/maaz-official)
+
+
 <p align="center">
   <img src="https://media.giphy.com/media/ZVik7pBtu9dNS/giphy.gif" alt="Blog GIF" width="300">
 </p>
