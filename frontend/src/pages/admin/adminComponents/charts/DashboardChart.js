@@ -3,33 +3,41 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useGetUsersQuery } from '../../../../slices/userApiSlice'; // Import the Redux hook for users
 import { useGetPostsQuery } from '../../../../slices/postApiSlice'; // Import the Redux hook for posts
+import { useGetCategoriesQuery } from '../../../../slices/categoryApiSlice'; // Import the Redux hook for categories
+import { useGetTagsQuery } from '../../../../slices/tagApiSlice'; // Import the Redux hook for tags
 import Loader from '../../../../components/Loader'; // Custom Loader component
 import Message from '../../../../components/Message'; // Custom Message component
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const DashboardChart = ({ categoryCount = 0, tagCount = 0 }) => {
+const DashboardChart = () => {
   // Fetch user data
   const { data: users, isLoading: isLoadingUsers, isError: isErrorUsers, error: errorUsers } = useGetUsersQuery();
   // Fetch posts data
   const { data: posts, isLoading: isLoadingPosts, isError: isErrorPosts, error: errorPosts } = useGetPostsQuery();
+  // Fetch categories data
+  const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories, error: errorCategories } = useGetCategoriesQuery();
+  // Fetch tags data
+  const { data: tags, isLoading: isLoadingTags, isError: isErrorTags, error: errorTags } = useGetTagsQuery();
 
-  // Show loader while either users or posts data is being fetched
-  if (isLoadingUsers || isLoadingPosts) return <Loader />;
+  // Show loader while any data is being fetched
+  if (isLoadingUsers || isLoadingPosts || isLoadingCategories || isLoadingTags) return <Loader />;
 
   // Handle error state with custom Message component
-  if (isErrorUsers || isErrorPosts) {
+  if (isErrorUsers || isErrorPosts || isErrorCategories || isErrorTags) {
     return (
       <Message variant="danger">
-        {errorUsers?.data?.message || errorPosts?.data?.message || 'Error loading dashboard data'}
+        {errorUsers?.data?.message || errorPosts?.data?.message || errorCategories?.data?.message || errorTags?.data?.message || 'Error loading dashboard data'}
       </Message>
     );
   }
 
-  // Calculate user and post count if data is available
+  // Calculate user, post, category, and tag counts if data is available
   const userCount = users?.length || 0; // Fallback to 0 if users data is undefined
   const postCount = posts?.length || 0; // Fallback to 0 if posts data is undefined
+  const categoryCount = categories?.length || 0; // Fallback to 0 if categories data is undefined
+  const tagCount = tags?.length || 0; // Fallback to 0 if tags data is undefined
 
   // Data for the bar chart
   const data = {
