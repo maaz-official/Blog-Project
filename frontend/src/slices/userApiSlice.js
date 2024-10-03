@@ -10,6 +10,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      onError: (error) => {
+        console.error('Login failed:', error);
+      },
     }),
 
     // Register new user
@@ -23,11 +26,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
     // Get all users (Admin only)
     getUsers: builder.query({
-      query: () => ({
-        url: `${USER_URL}`,
-        method: 'GET',
-      }),
-      providesTags: ['Users'],
+      query: () => `${USER_URL}`,
+      providesTags: (result) =>
+        result ? 
+        [...result.map(({ id }) => ({ type: 'User', id })), 'Users'] : 
+        ['Users'],
     }),
 
     // Get user by ID (Admin only)
@@ -60,6 +63,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
+// Export hooks for usage in functional components
 export const {
   useLoginMutation,
   useRegisterMutation,

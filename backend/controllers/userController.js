@@ -1,4 +1,4 @@
-import { User } from '../model/userModel.js'; // Use named import
+import { User, UserRole } from '../model/userModel.js'; // Adjusted import for UserRole
 import generateToken from '../utils/generateToken.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import {
@@ -14,15 +14,20 @@ import {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  // Find user by email
   const user = await User.findOne({ email });
 
+  // If user is found and password matches
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(user._id, res);
+
+    // Prepare the response object, including roles
     res.status(200).json({
       _id: user._id,
-      name: user.name,
+      fullName: user.fullName,
       email: user.email,
-      isAdmin: user.isAdmin,
+      roles: user.roles, // Include roles in the response
+      isAdmin: user.roles.includes(UserRole.ADMIN), // Check if the user has the admin role
       profileImage: user.profileImage,
       token,
     });
@@ -36,7 +41,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, password, profileImage, username } = req.body;
+  const { fullName, email, password, profileImage, username, roles } = req.body;
 
   const userExists = await User.findOne({ email });
 
@@ -45,12 +50,16 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('User already exists');
   }
 
+  // Check if the roles are provided, otherwise assign the default role
+  const assignedRoles = roles && roles.length > 0 ? roles : [UserRole.USER];
+
   const user = await User.create({
     fullName,
     email,
     password,
     profileImage: profileImage || 'https://www.example.com/default-profile.jpg',
     username: username || null,
+    roles: assignedRoles, // Use the assigned roles
   });
 
   if (user) {
@@ -59,9 +68,10 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      isAdmin: user.isAdmin,
+      isAdmin: user.roles.includes(UserRole.ADMIN), // Check if the user is an admin
       profileImage: user.profileImage,
       username: user.username,
+      roles: user.roles, // Return the roles
       token,
     });
   } else {
