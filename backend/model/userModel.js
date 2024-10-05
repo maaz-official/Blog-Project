@@ -8,7 +8,6 @@ const UserRole = {
     MODERATOR: 'moderator',
 };
 
-// Create a user schema
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -18,11 +17,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        trim: true,  // Trims whitespace
     },
     username: {
         type: String,
         unique: true,
-        sparse: true,
+        sparse: true, // Allows unique values but can be null
+        trim: true,
     },
     password: {
         type: String,
@@ -46,10 +47,20 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     }],
+    status: {
+        type: String,
+        enum: ['active', 'inactive', 'connected'],
+        default: 'inactive',
+    },
+    socketId: {
+        type: String,
+        default: null,
+    },
     roles: {
         type: [{
             type: String,
             enum: Object.values(UserRole),
+            default: UserRole.USER,
         }],
         default: [UserRole.USER],
     },
@@ -103,12 +114,14 @@ userSchema.methods.removeFollower = async function (userIdToRemove) {
 // Ban user method
 userSchema.methods.ban = async function () {
     this.isBanned = true;
+    this.status = 'inactive'; // Automatically set status to inactive on ban
     await this.save();
 };
 
 // Unban user method
 userSchema.methods.unban = async function () {
     this.isBanned = false;
+    this.status = 'active'; // Automatically set status to active on unban
     await this.save();
 };
 
@@ -124,10 +137,23 @@ userSchema.statics.findByRole = async function (role) {
 
 // Static method to create a new user with hashed password
 userSchema.statics.createUser = async function (userData) {
-    const salt = await bcrypt.genSalt(10);
-    userData.password = await bcrypt.hash(userData.password, salt);
     const user = new this(userData);
-    return await user.save();
+    await user.save();
+    return user; // Return the created user
+};
+
+// Static method to update user status
+userSchema.statics.updateUserStatus = async function (userId, status) {
+    const validStatuses = ['active', 'inactive', 'connected'];
+    if (!validStatuses.includes(status)) {
+        throw new Error('Invalid status value');
+    }
+    return await this.findByIdAndUpdate(userId, { status }, { new: true });
+};
+
+// Static method to get all users (optional)
+userSchema.statics.getAllUsers = async function () {
+    return await this.find().select('-password'); // Exclude password from the result
 };
 
 // Export User model and UserRole enum

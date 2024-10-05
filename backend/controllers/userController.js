@@ -14,20 +14,20 @@ import {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Find user by email
   const user = await User.findOne({ email });
 
-  // If user is found and password matches
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(user._id, res);
 
-    // Prepare the response object, including roles
+    // Emit user login event using globally available io
+    req.app.get('io').emit('userStatus', { userId: user._id, status: 'active' }); // Emit the event to all connected clients
+
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      roles: user.roles, // Include roles in the response
-      isAdmin: user.roles.includes(UserRole.ADMIN), // Check if the user has the admin role
+      roles: user.roles,
+      isAdmin: user.hasRole(UserRole.ADMIN),
       profileImage: user.profileImage,
       token,
     });
@@ -53,7 +53,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // Check if the roles are provided, otherwise assign the default role
   const assignedRoles = roles && roles.length > 0 ? roles : [UserRole.USER];
 
-  const user = await User.create({
+  const user = await User.createUser({
     fullName,
     email,
     password,
@@ -68,7 +68,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      isAdmin: user.roles.includes(UserRole.ADMIN), // Check if the user is an admin
+      isAdmin: user.hasRole(UserRole.ADMIN),
       profileImage: user.profileImage,
       username: user.username,
       roles: user.roles, // Return the roles
@@ -91,7 +91,10 @@ const logoutUser = asyncHandler(async (req, res) => {
     sameSite: 'strict',
   });
 
-  res.status(200).json({ message: 'User logged out successfully' });
+  // Emit user logout event using globally available io
+  req.app.get('io').emit('userStatus', { userId: req.user._id, status: 'inactive' });
+
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 // @desc    Follow a user
@@ -196,10 +199,26 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
-    user.fullName = req.body.fullName || user.fullName;
-    user.email = req.body.email || user.email;
-    user.isAdmin = req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
-    user.username = req.body.username || user.username;
+    // Update user fields conditionally
+    user.fullName = req.body.fullName !== undefined ? req.body.fullName : user.fullName;
+    user.email = req.body.email !== undefined ? req.body.email : user.email;
+    user.username = req.body.username !== undefined ? req.body.username : user.username;
+
+    // Handle roles: Check if roles are provided in the request body
+    if (req.body.roles && Array.isArray(req.body.roles)) {
+      // Ensure the roles being set are valid
+      const validRoles = Object.values(UserRole); // Assuming UserRole is an enum
+      const invalidRoles = req.body.roles.filter(role => !validRoles.includes(role));
+
+      if (invalidRoles.length > 0) {
+        res.status(400);
+        throw new Error(`Invalid roles provided: ${invalidRoles.join(', ')}`);
+      }
+
+      user.roles = req.body.roles; // Assign new roles
+    }
+
+    // If roles are not provided, the existing roles will remain unchanged
 
     const updatedUser = await user.save();
 
@@ -207,7 +226,7 @@ const updateUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       fullName: updatedUser.fullName,
       email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      roles: updatedUser.roles, // Return updated roles
       username: updatedUser.username,
       profileImage: updatedUser.profileImage,
     });
@@ -216,6 +235,8 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
+
+
 
 // @desc    Delete user (Admin only)
 // @route   DELETE /api/users/:id

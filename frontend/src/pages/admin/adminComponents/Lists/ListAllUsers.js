@@ -1,111 +1,120 @@
-import React from 'react';
-import { useGetUsersQuery } from '../../../../slices/userApiSlice'; // Import the hook
-import { Box, Typography, Button, Table, TableBody, TableCell, TableHead, TableRow, Avatar, Chip, Paper, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'; // Import the trash icon
-import AdminLayout from '../../layout/AdminLayout'; // Import AdminLayout
-import Loader from '../../../../components/Loader'; // Import Loader component
-import Message from '../../../../components/Message'; // Import Message component
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetUsersQuery, useDeleteUserMutation } from '../../../../slices/userApiSlice';
+import { FaTrash, FaEdit } from 'react-icons/fa';
+import Loader from '../../../../components/Loader';
+import { toast } from 'react-toastify';
+import AdminLayout from '../../layout/AdminLayout';
+import PermissionAsk from '../../../../components/PermissionAsk'; // Import PermissionAsk component
 
-function ListAllUsers() {
-  const { data: users, isLoading, isError, error } = useGetUsersQuery();
+const ListAllUsers = () => {
+  const { data: users = [], isLoading, isError } = useGetUsersQuery(); // Fetch users
 
-  // Function to handle delete action (you can implement the actual delete logic)
-  const handleDelete = (id) => {
-    console.log('Delete user with ID:', id);
-    // Implement the delete logic here, e.g., call API to delete the user
+  const [deleteUser] = useDeleteUserMutation();
+  const navigate = useNavigate();
+  const [showPermissionAsk, setShowPermissionAsk] = useState(false); // State to control PermissionAsk modal visibility
+  const [selectedUserId, setSelectedUserId] = useState(null); // Store user ID for deletion
+
+  const handleDeleteClick = (id) => {
+    setSelectedUserId(id); // Set the selected user ID
+    setShowPermissionAsk(true); // Show the permission modal
   };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteUser(selectedUserId).unwrap();
+      toast.success('User deleted successfully');
+    } catch (err) {
+      toast.error('Failed to delete user');
+    } finally {
+      setShowPermissionAsk(false); // Hide the modal after deletion
+    }
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/admin/users/edit/${id}`);
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isError) {
+    return <p>Failed to load users</p>;
+  }
+
+  if (!Array.isArray(users) || users.length === 0) {
+    return <p>No users found</p>;
+  }
 
   return (
     <AdminLayout>
-      <Box sx={{ maxWidth: '1000px', mx: 'auto', p: 4 }}>
-        <Paper elevation={3} sx={{ p: 3 }}>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 'bold',
-              color: '#fff',
-              backgroundColor: '#333',
-              p: 2,
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-            }}
-          >
-            Authors Table
-          </Typography>
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="bg-gray-900 text-white p-4 rounded-t-lg shadow-md">
+          <h1 className="text-xl font-bold">Users Table</h1>
+        </div>
 
-          {/* Loader and Error Handling */}
-          {isLoading && <Loader />} {/* Show Loader while loading */}
-          {isError && <Message variant="error">{error?.data?.message || 'Something went wrong!'}</Message>} {/* Show Error message */}
+        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr className="bg-gray-100 text-left text-gray-600 text-sm font-medium uppercase">
+                <th className="px-6 py-3">Full Name</th>
+                <th className="px-6 py-3">Email</th>
+                <th className="px-6 py-3">Role(s)</th>
+                <th className="px-6 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user, idx) => (
+                <tr key={user._id} className={`border-t ${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <p className="font-semibold text-gray-900">{user.fullName}</p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <p className="text-sm font-medium text-gray-600">{user.email}</p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <p className="text-sm font-medium text-gray-600">
+                      {user.roles.map((role, index) => (
+                        <span key={index} className="mr-2">
+                          {role.charAt(0).toUpperCase() + role.slice(1)}
+                        </span>
+                      ))}
+                    </p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={() => handleEdit(user._id)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FaEdit className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(user._id)} // Call handleDeleteClick to ask for permission
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-          {/* User Table */}
-          {!isLoading && !isError && (
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold', color: '#6c757d' }}>AUTHOR</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', color: '#6c757d' }}>ROLE</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', color: '#6c757d' }}>STATUS</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', color: '#6c757d' }}>REG. DATE</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', color: '#6c757d' }}></TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user._id}>
-                    {/* AUTHOR - with Avatar and Name */}
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar src={user.profileImage} alt={user.fullName} sx={{ mr: 2 }} />
-                        <Box>
-                          <Typography fontWeight="bold">{user.fullName || user.name}</Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {user.email}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </TableCell>
-
-                    {/* ROLE */}
-                    <TableCell>
-                      <Typography fontWeight="bold">{user.isAdmin ? 'Admin' : 'User'}</Typography>
-                    </TableCell>
-
-                    {/* STATUS */}
-                    <TableCell>
-                      {user.isAdmin ? (
-                        <Chip label="ONLINE" color="success" size="small" />
-                      ) : (
-                        <Chip label="OFFLINE" color="default" size="small" />
-                      )}
-                    </TableCell>
-
-                    {/* REG. DATE */}
-                    <TableCell>
-                      {/* Use createdAt from the database */}
-                      <Typography>{new Date(user.createdAt).toLocaleDateString()}</Typography>
-                    </TableCell>
-
-                    {/* ACTION BUTTONS - Edit and Delete */}
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Button variant="outlined" size="small" sx={{ mr: 1 }}>
-                          Edit
-                        </Button>
-                        <IconButton color="error" onClick={() => handleDelete(user._id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </Paper>
-      </Box>
+        {/* Render PermissionAsk modal conditionally */}
+        {showPermissionAsk && (
+          <PermissionAsk
+            onConfirm={handleDeleteConfirm} // Confirm deletion
+            onCancel={() => setShowPermissionAsk(false)} // Cancel deletion
+            message="Are you sure you want to delete this user?"
+          />
+        )}
+      </div>
     </AdminLayout>
   );
-}
+};
 
 export default ListAllUsers;
