@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import connectDB from './config/db.js';  // Assuming you have a db.js file for database connection
 import Post from './model/postModel.js'; // Assuming you have a Post model
-import User from './model/userModel.js'; // Assuming you have a User model
+import {User} from './model/userModel.js'; // Assuming you have a User model
 import postData from './data/post.js'; // Your static post data
 
 // Load environment variables

@@ -8,7 +8,7 @@ import AdminLayout from '../../layout/AdminLayout'; // Import the AdminLayout
 
 const ListAllPosts = () => {
   const { data: posts = [], isLoading, isError } = useGetPostsQuery();
-  const [deletePost] = useDeletePostMutation();
+  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation(); // Add isLoading state for delete
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
@@ -87,8 +87,12 @@ const ListAllPosts = () => {
                         <Link to={`/posts/edit/${post._id}`} className="text-blue-500 hover:text-blue-700">
                           <FaEdit className="w-5 h-5" />
                         </Link>
-                        <button onClick={() => handleDelete(post._id)} className="text-red-500 hover:text-red-700">
-                          <FaTrash className="w-5 h-5" />
+                        <button
+                          onClick={() => handleDelete(post._id)}
+                          className="text-red-500 hover:text-red-700"
+                          disabled={isDeleting} // Disable delete button while deleting
+                        >
+                          <FaTrash className={`w-5 h-5 ${isDeleting ? 'animate-spin' : ''}`} /> {/* Add spinner icon */}
                         </button>
                       </div>
                     </td>
@@ -99,7 +103,7 @@ const ListAllPosts = () => {
           </div>
         )}
       </div>
-    </AdminLayout> 
+    </AdminLayout>
   );
 };
 
