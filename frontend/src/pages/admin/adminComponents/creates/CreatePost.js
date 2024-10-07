@@ -1,248 +1,173 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Select, MenuItem, Typography, FormControl, InputLabel, Grid, IconButton, useMediaQuery } from '@mui/material';
-import { PhotoCamera } from '@mui/icons-material';
-import QuillEditor from '../../quill/QuillEditor';  // Import the QuillEditor component
-import AdminLayout from '../../layout/AdminLayout';  // Import the AdminLayout
+import { useNavigate } from 'react-router-dom';
+import { useCreatePostMutation } from '../../../../slices/postApiSlice';
+import { useGetCategoriesQuery } from '../../../../slices/categoryApiSlice'; // Fetch categories
+import { useGetTagsQuery } from '../../../../slices/tagApiSlice'; // Fetch tags
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-const CreatePost = () => {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [tags, setTags] = useState([]);
-  const [content, setContent] = useState('');  // Content managed via QuillEditor
-  const [seoTitle, setSeoTitle] = useState('');
-  const [seoDescription, setSeoDescription] = useState('');
-  const [author, setAuthor] = useState('');
-  const [uploadedImage, setUploadedImage] = useState(null);  // Image upload
-  const [imageError, setImageError] = useState(false);  // Main image validation error
+function CreatePost() {
+  const navigate = useNavigate();
+  const [createPost, { isLoading }] = useCreatePostMutation();
 
-  const isMobile = useMediaQuery('(max-width:600px)');
+  const { data: categories = [], isLoading: categoriesLoading } = useGetCategoriesQuery(); // Get categories
+  const { data: tags = [], isLoading: tagsLoading } = useGetTagsQuery(); // Get tags
 
-  // Sample data for categories, tags, and authors
-  const availableCategories = ['Tech', 'Lifestyle', 'Business', 'Health', 'Education'];
-  const availableTags = ['React', 'JavaScript', 'Web Development', 'SEO', 'Programming'];
-  const availableAuthors = ['John Doe', 'Jane Smith', 'Alex Johnson'];
+  const [formData, setFormData] = useState({
+    title: '',
+    author: '',
+    content: '',
+    coverImage: '',
+    category: '', // Single category
+    tags: [], // Multiple tags
+  });
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!uploadedImage) {
-      setImageError(true);
-      return;
-    }
-
-    const postData = {
-      title,
-      category,
-      tags,
-      content,
-      seoTitle,
-      seoDescription,
-      author,
-      uploadedImage,
-    };
-    console.log('Post Data:', postData);
-    // Perform API call here
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  // Handle image upload
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUploadedImage(reader.result);
-      setImageError(false); // Reset error on successful image upload
-    };
-    reader.readAsDataURL(file);
+  const handleTagsChange = (e) => {
+    const selectedTags = Array.from(e.target.selectedOptions, option => option.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      tags: selectedTags,
+    }));
+  };
+
+  const handleContentChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      content: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const postData = {
+        ...formData,
+        likes: 0,
+        shares: 0,
+        views: 0,
+        readTime: 0,
+        comments: [],
+      };
+      await createPost(postData).unwrap();
+      alert('Post created successfully!');
+      navigate('/posts');
+    } catch (error) {
+      console.error('Failed to create post:', error);
+      alert('Failed to create post. Please try again.');
+    }
   };
 
   return (
-    <AdminLayout> {/* Wrap CreatePost inside AdminLayout */}
-      <Box
-        p={isMobile ? 2 : 4}
-        maxWidth="900px"
-        mx="auto"
-        sx={{
-          borderRadius: '12px',
-        }}
-      >
-        <Typography
-          variant={isMobile ? 'h5' : 'h4'}
-          fontWeight="bold"
-          mb={isMobile ? 3 : 4}
-          sx={{ color: '#1976D2', textAlign: 'center' }}
+    <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
+      <h2 className="text-3xl font-bold mb-6">Create New Post</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Title */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Title:</label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Author */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Author:</label>
+          <input
+            type="text"
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Content */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Content:</label>
+          <ReactQuill
+            value={formData.content}
+            onChange={handleContentChange}
+            theme="snow"
+            placeholder="Write your post content here..."
+            className="w-full h-64"
+            required
+          />
+        </div>
+
+        {/* Cover Image URL */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image URL:</label>
+          <input
+            type="text"
+            name="coverImage"
+            value={formData.coverImage}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Category Dropdown */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category:</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a category</option>
+            {!categoriesLoading && categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Tags Multi-select */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tags:</label>
+          <select
+            name="tags"
+            value={formData.tags}
+            onChange={handleTagsChange}
+            multiple
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {!tagsLoading && tags.map((tag) => (
+              <option key={tag._id} value={tag._id}>
+                {tag.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Create a New Post
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Title"
-                variant="outlined"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                sx={{ mb: 2, '& .MuiInputLabel-root': { color: '#1976D2' } }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel sx={{ color: '#1976D2' }}>Category</InputLabel>
-                <Select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  label="Category"
-                  required
-                  sx={{ mb: 2 }}
-                >
-                  {availableCategories.map((category, index) => (
-                    <MenuItem key={index} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel sx={{ color: '#1976D2' }}>Tags</InputLabel>
-                <Select
-                  multiple
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  label="Tags"
-                  sx={{ mb: 2 }}
-                >
-                  {availableTags.map((tag, index) => (
-                    <MenuItem key={index} value={tag}>
-                      {tag}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* Post Author */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel sx={{ color: '#1976D2' }}>Author</InputLabel>
-                <Select
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  label="Author"
-                  required
-                  sx={{ mb: 2 }}
-                >
-                  {availableAuthors.map((author, index) => (
-                    <MenuItem key={index} value={author}>
-                      {author}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* SEO Fields */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="SEO Title"
-                variant="outlined"
-                value={seoTitle}
-                onChange={(e) => setSeoTitle(e.target.value)}
-                sx={{ mb: 2 }}
-                helperText={`${seoTitle.length} / 60 characters`}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="SEO Description"
-                variant="outlined"
-                value={seoDescription}
-                onChange={(e) => setSeoDescription(e.target.value)}
-                multiline
-                rows={2}
-                sx={{ mb: 2 }}
-                helperText={`${seoDescription.length} / 160 characters`}
-              />
-            </Grid>
-
-            {/* Image Upload */}
-            <Grid item xs={12} md={6}>
-              <Typography>Upload Main Image (Required)</Typography>
-              <IconButton color="primary" aria-label="upload picture" component="label">
-                <input hidden accept="image/*" type="file" onChange={handleImageUpload} />
-                <PhotoCamera />
-              </IconButton>
-              {uploadedImage && (
-                <Box mt={2}>
-                  <img src={uploadedImage} alt="Preview" style={{ width: '100%', maxHeight: '200px', borderRadius: '5px' }} />
-                </Box>
-              )}
-              {imageError && (
-                <Typography color="error" variant="caption">
-                  Please upload a main image for the post.
-                </Typography>
-              )}
-            </Grid>
-
-            {/* QuillEditor Integration */}
-            <Box
-              mb={4}
-              sx={{
-                borderRadius: '16px',
-                padding: isMobile ? 2 : 4,
-                border: '1px solid #e0e0e0',
-                width: '100%',
-              }}
-            >
-              <QuillEditor 
-                value={content} 
-                onChange={(value) => setContent(value)}  // Pass content state to QuillEditor
-              />
-            </Box>
-          </Grid>
-
-          {/* Submit and Preview Buttons */}
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{ py: 1.5, '&:hover': { backgroundColor: '#f5f5f5' } }}
-              >
-                Preview Post
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                fullWidth
-                sx={{
-                  py: 1.5,
-                  backgroundColor: '#1976D2',
-                  '&:hover': {
-                    backgroundColor: '#1565C0',
-                  },
-                }}
-              >
-                Create Post
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </AdminLayout>  // Close AdminLayout here
+          {isLoading ? 'Creating...' : 'Create Post'}
+        </button>
+      </form>
+    </div>
   );
-};
+}
 
 export default CreatePost;
